@@ -8,28 +8,22 @@
   <title>MailFlow — Gmail Sender</title>
   <style>
     :root {
-      --bg: #07101f;
-      --panel: rgba(12, 24, 44, 0.78);
-      --panel-strong: #0d1a30;
-      --border: rgba(159, 190, 255, 0.15);
-      --text: #f7f9ff;
-      --muted: #9babca;
-      --primary: #7c8cff;
-      --primary-strong: #6375f5;
-      --success: #50d5a4;
-      --danger: #ff7c91;
-      --warning: #ffd071;
-      --shadow: 0 30px 90px rgba(0, 0, 0, 0.42);
+      --bg: #060b16;
+      --panel: rgba(13, 24, 43, 0.82);
+      --panel-2: rgba(9, 18, 34, 0.78);
+      --border: rgba(168, 190, 255, 0.16);
+      --text: #f6f8ff;
+      --muted: #9ba8c7;
+      --primary: #7588ff;
+      --primary-2: #566cf0;
+      --success: #4fd3a5;
+      --danger: #ff7f94;
+      --warning: #ffd173;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html {
-      min-height: 100%;
-      background: var(--bg);
-    }
+    html { min-height: 100%; background: var(--bg); }
 
     body {
       margin: 0;
@@ -37,10 +31,9 @@
       font-family: Inter, Arial, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 15% 10%, rgba(86, 113, 255, 0.22), transparent 32%),
-        radial-gradient(circle at 86% 82%, rgba(50, 209, 166, 0.13), transparent 28%),
-        linear-gradient(145deg, #050b16 0%, #091426 48%, #07101e 100%);
-      overflow-x: hidden;
+        radial-gradient(circle at 12% 12%, rgba(91, 113, 255, .25), transparent 32%),
+        radial-gradient(circle at 88% 85%, rgba(50, 211, 164, .14), transparent 28%),
+        linear-gradient(145deg, #040914, #091426 48%, #07101e);
     }
 
     body::before {
@@ -48,29 +41,23 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      opacity: 0.22;
+      opacity: .2;
       background-image:
         linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
-      background-size: 42px 42px;
-      mask-image: linear-gradient(to bottom, black, transparent 85%);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, #000, transparent 88%);
     }
 
-    button,
-    input,
-    textarea {
-      font: inherit;
-    }
+    button, input, textarea { font: inherit; }
 
-    button {
-      border: 0;
-    }
+    button { border: 0; }
 
     .page {
       position: relative;
       width: min(1180px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 30px 0 46px;
+      padding: 28px 0 42px;
     }
 
     .topbar {
@@ -78,7 +65,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 30px;
+      margin-bottom: 26px;
     }
 
     .brand {
@@ -93,42 +80,23 @@
       display: grid;
       place-items: center;
       border-radius: 15px;
-      background: linear-gradient(145deg, #91a0ff, #5e71ef);
-      box-shadow: 0 13px 35px rgba(96, 115, 245, 0.36);
+      background: linear-gradient(145deg, #96a4ff, #5c70ef);
+      box-shadow: 0 14px 38px rgba(88, 108, 238, .36);
     }
 
-    .brand-mark svg {
-      width: 24px;
-      height: 24px;
-    }
-
-    .brand-name {
-      font-size: 21px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-
-    .brand-subtitle {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 2px;
-    }
-
-    .top-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .brand-mark svg { width: 25px; height: 25px; }
+    .brand-name { font-size: 21px; font-weight: 850; letter-spacing: -.5px; }
+    .brand-subtitle { margin-top: 2px; color: var(--muted); font-size: 12px; }
 
     .status-chip {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      min-height: 40px;
-      padding: 9px 13px;
+      min-height: 41px;
+      padding: 9px 14px;
       border: 1px solid var(--border);
       border-radius: 999px;
-      background: rgba(8, 17, 32, 0.72);
+      background: rgba(7, 15, 29, .76);
       color: var(--muted);
       font-size: 13px;
     }
@@ -138,36 +106,17 @@
       height: 8px;
       border-radius: 50%;
       background: #65718a;
-      box-shadow: 0 0 0 4px rgba(101, 113, 138, 0.12);
+      box-shadow: 0 0 0 4px rgba(101, 113, 138, .12);
     }
 
     .status-chip.connected {
-      color: #bff5df;
-      border-color: rgba(80, 213, 164, 0.25);
+      color: #c3f5e2;
+      border-color: rgba(79, 211, 165, .28);
     }
 
     .status-chip.connected .status-dot {
       background: var(--success);
-      box-shadow: 0 0 0 4px rgba(80, 213, 164, 0.13);
-    }
-
-    .icon-button {
-      width: 40px;
-      height: 40px;
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      color: #dbe2f5;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: rgba(8, 17, 32, 0.72);
-      transition: 160ms ease;
-    }
-
-    .icon-button:hover {
-      transform: translateY(-1px);
-      border-color: rgba(159, 190, 255, 0.32);
-      background: rgba(18, 32, 57, 0.92);
+      box-shadow: 0 0 0 4px rgba(79, 211, 165, .13);
     }
 
     .layout {
@@ -179,39 +128,36 @@
 
     .card {
       border: 1px solid var(--border);
-      border-radius: 26px;
+      border-radius: 27px;
       background: var(--panel);
       backdrop-filter: blur(20px);
-      box-shadow: var(--shadow);
+      box-shadow: 0 30px 90px rgba(0, 0, 0, .42);
     }
 
-    .composer {
-      padding: clamp(22px, 4vw, 38px);
-    }
+    .composer { padding: clamp(23px, 4vw, 39px); }
 
     .eyebrow {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       margin-bottom: 13px;
-      color: #b9c4ff;
+      color: #bdc6ff;
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 850;
       letter-spacing: 1.4px;
-      text-transform: uppercase;
     }
 
     h1 {
       margin: 0;
       max-width: 760px;
-      font-size: clamp(32px, 5vw, 55px);
+      font-size: clamp(33px, 5vw, 56px);
       line-height: 1.04;
       letter-spacing: -1.8px;
     }
 
     .lead {
-      max-width: 700px;
-      margin: 16px 0 30px;
+      max-width: 720px;
+      margin: 16px 0 28px;
       color: var(--muted);
       font-size: 16px;
       line-height: 1.75;
@@ -226,7 +172,7 @@
       margin-bottom: 23px;
       border: 1px solid var(--border);
       border-radius: 17px;
-      background: rgba(5, 13, 26, 0.52);
+      background: rgba(4, 12, 25, .55);
     }
 
     .account-info {
@@ -238,59 +184,38 @@
 
     .avatar {
       flex: 0 0 auto;
-      width: 38px;
-      height: 38px;
+      width: 39px;
+      height: 39px;
       display: grid;
       place-items: center;
       border-radius: 12px;
-      color: #cdd5ef;
-      background: linear-gradient(145deg, #182b4d, #12203a);
-      font-weight: 800;
+      color: #d2d9ef;
+      background: linear-gradient(145deg, #1a2e51, #11203a);
+      font-weight: 850;
     }
 
-    .account-label {
-      color: var(--muted);
-      font-size: 11px;
-      margin-bottom: 3px;
-    }
-
-    .account-email {
-      overflow: hidden;
-      color: #edf1ff;
-      font-size: 13px;
-      font-weight: 700;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+    .account-label { margin-bottom: 3px; color: var(--muted); font-size: 11px; }
+    .account-email { overflow: hidden; color: #eef2ff; font-size: 13px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
 
     .button {
-      min-height: 44px;
+      min-height: 45px;
       padding: 11px 17px;
       border-radius: 13px;
       cursor: pointer;
-      font-weight: 800;
+      font-weight: 850;
       transition: 160ms ease;
     }
 
-    .button:hover:not(:disabled) {
-      transform: translateY(-1px);
-    }
-
-    .button:disabled {
-      opacity: 0.46;
-      cursor: not-allowed;
-    }
+    .button:hover:not(:disabled) { transform: translateY(-1px); }
+    .button:disabled { opacity: .46; cursor: not-allowed; }
 
     .button-secondary {
-      color: #dfe5f5;
+      color: #e0e6f7;
       border: 1px solid var(--border);
       background: #12213a;
     }
 
-    .form-grid {
-      display: grid;
-      gap: 19px;
-    }
+    .form-grid { display: grid; gap: 19px; }
 
     .field label {
       display: flex;
@@ -298,51 +223,35 @@
       justify-content: space-between;
       gap: 10px;
       margin-bottom: 8px;
-      color: #dfe5f7;
+      color: #e1e6f7;
       font-size: 13px;
-      font-weight: 750;
+      font-weight: 780;
     }
 
-    .field-note {
-      color: #6f7f9f;
-      font-size: 11px;
-      font-weight: 500;
-    }
+    .field-note { color: #7281a0; font-size: 11px; font-weight: 500; }
 
     .control {
       width: 100%;
       color: var(--text);
-      border: 1px solid rgba(156, 180, 229, 0.17);
+      border: 1px solid rgba(156, 180, 229, .18);
       border-radius: 15px;
       outline: none;
-      background: rgba(5, 13, 26, 0.72);
+      background: rgba(4, 12, 25, .72);
       transition: 150ms ease;
     }
 
-    input.control {
-      min-height: 50px;
-      padding: 0 15px;
-    }
-
-    textarea.control {
-      min-height: 180px;
-      padding: 15px;
-      line-height: 1.65;
-      resize: vertical;
-    }
-
-    .control::placeholder {
-      color: #60708f;
-    }
+    input.control { min-height: 51px; padding: 0 15px; }
+    textarea.control { min-height: 185px; padding: 15px; line-height: 1.65; resize: vertical; }
+    .control::placeholder { color: #62718f; }
 
     .control:focus {
-      border-color: rgba(124, 140, 255, 0.72);
-      box-shadow: 0 0 0 4px rgba(124, 140, 255, 0.09);
+      border-color: rgba(117, 136, 255, .74);
+      box-shadow: 0 0 0 4px rgba(117, 136, 255, .09);
     }
 
     .control.invalid {
-      border-color: rgba(255, 124, 145, 0.66);
-      box-shadow: 0 0 0 4px rgba(255, 124, 145, 0.07);
+      border-color: rgba(255, 127, 148, .68);
+      box-shadow: 0 0 0 4px rgba(255, 127, 148, .07);
     }
 
     .checkbox-row {
@@ -361,45 +270,30 @@
       accent-color: var(--primary);
     }
 
-    .send-row {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      margin-top: 4px;
-    }
-
     .send-button {
-      flex: 1;
-      min-height: 54px;
+      width: 100%;
+      min-height: 55px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
       padding: 13px 22px;
       border-radius: 16px;
-      color: white;
-      background: linear-gradient(135deg, #8796ff, #6174f1);
-      box-shadow: 0 15px 35px rgba(87, 106, 230, 0.29);
+      color: #fff;
+      background: linear-gradient(135deg, #8796ff, #5d72ef);
+      box-shadow: 0 15px 35px rgba(87, 106, 230, .29);
       cursor: pointer;
-      font-weight: 850;
+      font-weight: 870;
       transition: 170ms ease;
     }
 
     .send-button:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 18px 42px rgba(87, 106, 230, 0.36);
+      box-shadow: 0 18px 43px rgba(87, 106, 230, .37);
     }
 
-    .send-button:disabled {
-      opacity: 0.48;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    .send-button svg {
-      width: 19px;
-      height: 19px;
-    }
+    .send-button:disabled { opacity: .48; cursor: not-allowed; box-shadow: none; }
+    .send-button svg { width: 19px; height: 19px; }
 
     .message-status {
       display: none;
@@ -407,45 +301,27 @@
       padding: 14px 15px;
       border: 1px solid var(--border);
       border-radius: 15px;
-      color: #c9d2e9;
-      background: rgba(5, 13, 26, 0.58);
+      color: #cbd3ea;
+      background: rgba(4, 12, 25, .6);
       font-size: 13px;
       line-height: 1.55;
     }
 
-    .message-status.visible {
-      display: block;
-    }
+    .message-status.visible { display: block; }
+    .message-status.success { color: #c7f6e3; border-color: rgba(79, 211, 165, .29); background: rgba(24, 84, 67, .2); }
+    .message-status.error { color: #ffd0d8; border-color: rgba(255, 127, 148, .29); background: rgba(94, 31, 47, .2); }
 
-    .message-status.success {
-      color: #c7f6e3;
-      border-color: rgba(80, 213, 164, 0.28);
-      background: rgba(24, 84, 67, 0.2);
-    }
-
-    .message-status.error {
-      color: #ffd0d8;
-      border-color: rgba(255, 124, 145, 0.28);
-      background: rgba(94, 31, 47, 0.2);
-    }
-
-    .side {
-      display: grid;
-      gap: 16px;
-    }
+    .side { display: grid; gap: 16px; }
 
     .side-card {
       padding: 22px;
       border: 1px solid var(--border);
       border-radius: 21px;
-      background: rgba(10, 21, 39, 0.7);
+      background: var(--panel-2);
       backdrop-filter: blur(16px);
     }
 
-    .side-card h2 {
-      margin: 0 0 14px;
-      font-size: 15px;
-    }
+    .side-card h2 { margin: 0 0 14px; font-size: 15px; }
 
     .metric {
       display: flex;
@@ -453,31 +329,14 @@
       justify-content: space-between;
       gap: 12px;
       padding: 11px 0;
-      border-bottom: 1px solid rgba(159, 190, 255, 0.09);
+      border-bottom: 1px solid rgba(159, 190, 255, .09);
     }
 
-    .metric:last-child {
-      border-bottom: 0;
-    }
+    .metric:last-child { border-bottom: 0; }
+    .metric-label { color: var(--muted); font-size: 12px; }
+    .metric-value { color: #eef2ff; font-size: 13px; font-weight: 850; }
 
-    .metric-label {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .metric-value {
-      color: #eef2ff;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .security-list {
-      display: grid;
-      gap: 12px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
+    .security-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
 
     .security-list li {
       display: flex;
@@ -496,119 +355,26 @@
       place-items: center;
       margin-top: 1px;
       border-radius: 7px;
-      color: #bdf3dd;
-      background: rgba(80, 213, 164, 0.12);
+      color: #bff4df;
+      background: rgba(79, 211, 165, .12);
       font-size: 11px;
       font-weight: 900;
     }
 
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 20;
-      display: none;
-      place-items: center;
-      padding: 18px;
-      background: rgba(2, 7, 15, 0.78);
-      backdrop-filter: blur(12px);
-    }
-
-    .modal-backdrop.open {
-      display: grid;
-    }
-
-    .modal {
-      width: min(560px, 100%);
-      padding: 26px;
-      border: 1px solid var(--border);
-      border-radius: 23px;
-      background: #0b172b;
-      box-shadow: var(--shadow);
-    }
-
-    .modal-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 18px;
-    }
-
-    .modal h2 {
-      margin: 0 0 6px;
-      font-size: 22px;
-    }
-
-    .modal p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .danger-link {
-      margin-left: auto;
-      color: #ffacb9;
-      background: transparent;
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    .footer {
-      margin-top: 24px;
-      text-align: center;
-      color: #637391;
-      font-size: 11px;
-      line-height: 1.6;
-    }
+    .footer { margin-top: 24px; text-align: center; color: #667593; font-size: 11px; line-height: 1.6; }
 
     @media (max-width: 880px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-
-      .side {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
+      .layout { grid-template-columns: 1fr; }
+      .side { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 620px) {
-      .page {
-        width: min(100% - 20px, 1180px);
-        padding-top: 18px;
-      }
-
-      .brand-subtitle,
-      .status-chip span:last-child {
-        display: none;
-      }
-
-      .composer {
-        border-radius: 21px;
-      }
-
-      .account-bar,
-      .send-row,
-      .modal-actions {
-        align-items: stretch;
-        flex-direction: column;
-      }
-
-      .button,
-      .send-button {
-        width: 100%;
-      }
-
-      .side {
-        grid-template-columns: 1fr;
-      }
+      .page { width: min(100% - 20px, 1180px); padding-top: 18px; }
+      .brand-subtitle, .status-chip span:last-child { display: none; }
+      .composer { border-radius: 22px; }
+      .account-bar { align-items: stretch; flex-direction: column; }
+      .button { width: 100%; }
+      .side { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -628,17 +394,9 @@
         </div>
       </div>
 
-      <div class="top-actions">
-        <div id="connectionChip" class="status-chip">
-          <span class="status-dot"></span>
-          <span id="connectionText">לא מחובר</span>
-        </div>
-        <button id="settingsButton" class="icon-button" type="button" title="הגדרות OAuth" aria-label="הגדרות OAuth">
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z" stroke="currentColor" stroke-width="1.7" />
-            <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.86 2.86-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21h-4v-.1a1.7 1.7 0 0 0-1.4-1.66 1.7 1.7 0 0 0-1.52.5l-.06.06-2.86-2.86.06-.06A1.7 1.7 0 0 0 4.16 15a1.7 1.7 0 0 0-1.16-1H3v-4h.1a1.7 1.7 0 0 0 1.66-1.4 1.7 1.7 0 0 0-.5-1.52l-.06-.06 2.86-2.86.06.06A1.7 1.7 0 0 0 9 4.56a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3h4v.1A1.7 1.7 0 0 0 15.8 4.76a1.7 1.7 0 0 0 1.52-.5l.06-.06 2.86 2.86-.06.06A1.7 1.7 0 0 0 19.84 9a1.7 1.7 0 0 0 1.16 1h.1v4H21a1.7 1.7 0 0 0-1.6 1Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </button>
+      <div id="connectionChip" class="status-chip">
+        <span class="status-dot"></span>
+        <span id="connectionText">לא מחובר</span>
       </div>
     </header>
 
@@ -647,7 +405,7 @@
         <div class="eyebrow">GMAIL API · SECURE OAUTH</div>
         <h1>שליחת אימייל נקייה, מהירה ומאובטחת.</h1>
         <p class="lead">
-          התחבר לחשבון Google שלך, הזן כתובת אימייל חוקית ושלח הודעה אחת. הסיסמה שלך לעולם אינה נשמרת באתר.
+          התחבר לחשבון Google, הזן כתובת אימייל חוקית ושלח הודעה אחת. סיסמת החשבון אינה נמסרת לאתר.
         </p>
 
         <div class="account-bar">
@@ -665,7 +423,7 @@
           <div class="field">
             <label for="recipient">
               כתובת הנמען
-              <span class="field-note">כתובת אימייל חוקית</span>
+              <span class="field-note">כל כתובת אימייל חוקית</span>
             </label>
             <input id="recipient" class="control" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="example@gmail.com" required />
           </div>
@@ -691,15 +449,13 @@
             <span>אני מאשר שהנמען מצפה לקבל ממני את ההודעה ושאינני משתמש באתר לספאם, הטרדה או התחזות.</span>
           </label>
 
-          <div class="send-row">
-            <button id="sendButton" class="send-button" type="submit" disabled>
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="m21 3-7.7 18-3.1-7.2L3 10.7 21 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M10.2 13.8 21 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-              </svg>
-              <span id="sendButtonText">שליחת הודעה</span>
-            </button>
-          </div>
+          <button id="sendButton" class="send-button" type="submit" disabled>
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m21 3-7.7 18-3.1-7.2L3 10.7 21 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M10.2 13.8 21 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+            <span id="sendButtonText">שליחת הודעה</span>
+          </button>
         </form>
 
         <div id="messageStatus" class="message-status" role="status" aria-live="polite"></div>
@@ -717,8 +473,8 @@
             <span id="cooldownValue" class="metric-value">מוכן</span>
           </div>
           <div class="metric">
-            <span class="metric-label">חיבור</span>
-            <span id="apiStatus" class="metric-value">לא הוגדר</span>
+            <span class="metric-label">Google OAuth</span>
+            <span id="apiStatus" class="metric-value">נטען</span>
           </div>
         </section>
 
@@ -735,50 +491,22 @@
     </main>
 
     <footer class="footer">
-      MailFlow משתמש ב-Google OAuth וב-Gmail API. אין להדביק Client Secret, סיסמה או App Password באתר.
+      MailFlow משתמש ב-Google OAuth וב-Gmail API. אין למסור לאתר Client Secret, סיסמה או App Password.
     </footer>
-  </div>
-
-  <div id="settingsModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-    <section class="modal">
-      <div class="modal-header">
-        <div>
-          <h2 id="settingsTitle">הגדרת Google OAuth</h2>
-          <p>הדבק כאן רק OAuth Client ID מסוג Web application. הערך נשמר מקומית בדפדפן הזה.</p>
-        </div>
-        <button id="closeSettingsButton" class="icon-button" type="button" aria-label="סגירה">×</button>
-      </div>
-
-      <div class="field">
-        <label for="clientIdInput">OAuth Client ID</label>
-        <input id="clientIdInput" class="control" type="text" autocomplete="off" spellcheck="false" placeholder="1234567890-abc.apps.googleusercontent.com" />
-      </div>
-
-      <p style="margin-top:13px">
-        ב-Google Cloud צריך להוסיף כ-Authorized JavaScript origin את:
-        <strong id="originText" style="color:#e9edff;word-break:break-all"></strong>
-      </p>
-
-      <div class="modal-actions">
-        <button id="clearSettingsButton" class="danger-link" type="button">מחיקת ההגדרה</button>
-        <button id="cancelSettingsButton" class="button button-secondary" type="button">ביטול</button>
-        <button id="saveSettingsButton" class="button" type="button" style="color:white;background:linear-gradient(135deg,#8796ff,#6174f1)">שמירה</button>
-      </div>
-    </section>
   </div>
 
   <script>
     "use strict";
 
-    const STORAGE = {
-      clientId: "mailflow_google_client_id",
-      lastSent: "mailflow_last_sent_at",
-      dailyUsage: "mailflow_daily_usage"
-    };
-
+    const CLIENT_ID = "473377517040-p20ldc92k3tsdl1g93k7q9j1q8l3hs74.apps.googleusercontent.com";
     const SCOPES = "openid email https://www.googleapis.com/auth/gmail.send";
     const COOLDOWN_MS = 60_000;
     const DAILY_LIMIT = 10;
+
+    const STORAGE = {
+      lastSent: "mailflow_last_sent_at",
+      dailyUsage: "mailflow_daily_usage"
+    };
 
     let googleLibraryReady = false;
     let tokenClient = null;
@@ -787,14 +515,6 @@
     let sending = false;
 
     const elements = {
-      settingsButton: document.getElementById("settingsButton"),
-      settingsModal: document.getElementById("settingsModal"),
-      closeSettingsButton: document.getElementById("closeSettingsButton"),
-      cancelSettingsButton: document.getElementById("cancelSettingsButton"),
-      saveSettingsButton: document.getElementById("saveSettingsButton"),
-      clearSettingsButton: document.getElementById("clearSettingsButton"),
-      clientIdInput: document.getElementById("clientIdInput"),
-      originText: document.getElementById("originText"),
       connectionChip: document.getElementById("connectionChip"),
       connectionText: document.getElementById("connectionText"),
       connectButton: document.getElementById("connectButton"),
@@ -815,22 +535,17 @@
       cooldownValue: document.getElementById("cooldownValue")
     };
 
-    function getClientId() {
-      return localStorage.getItem(STORAGE.clientId)?.trim() || "";
-    }
-
-    function isValidClientId(value) {
-      return /^[A-Za-z0-9._-]+\.apps\.googleusercontent\.com$/.test(value.trim());
-    }
-
     function isValidEmail(value) {
       const email = value.trim();
-      if (email.length > 254) return false;
-      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+      return email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
     }
 
     function todayKey() {
-      return new Date().toISOString().slice(0, 10);
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
     }
 
     function getDailyUsage() {
@@ -846,7 +561,6 @@
     function incrementDailyUsage() {
       const count = getDailyUsage() + 1;
       localStorage.setItem(STORAGE.dailyUsage, JSON.stringify({ date: todayKey(), count }));
-      return count;
     }
 
     function remainingCooldown() {
@@ -864,11 +578,6 @@
       elements.messageStatus.className = "message-status";
     }
 
-    function updateCounters() {
-      elements.subjectCount.textContent = `${elements.subject.value.length} / 120`;
-      elements.messageCount.textContent = `${elements.message.value.length} / 5000`;
-    }
-
     function updateConnectionUI() {
       const connected = Boolean(accessToken && senderEmail);
       elements.connectionChip.classList.toggle("connected", connected);
@@ -879,7 +588,6 @@
     }
 
     function updateControls() {
-      const configured = isValidClientId(getClientId());
       const usage = getDailyUsage();
       const cooldown = remainingCooldown();
       const formReady =
@@ -892,10 +600,12 @@
         cooldown === 0 &&
         !sending;
 
-      elements.apiStatus.textContent = configured ? "מוגדר" : "לא הוגדר";
-      elements.connectButton.disabled = !configured || !googleLibraryReady;
+      elements.connectButton.disabled = !googleLibraryReady;
       elements.sendButton.disabled = !formReady;
       elements.dailyUsage.textContent = `${usage} / ${DAILY_LIMIT}`;
+      elements.apiStatus.textContent = googleLibraryReady ? "מוכן" : "טוען";
+      elements.subjectCount.textContent = `${elements.subject.value.length} / 120`;
+      elements.messageCount.textContent = `${elements.message.value.length} / 5000`;
 
       if (usage >= DAILY_LIMIT) {
         elements.cooldownValue.textContent = "המגבלה היומית נוצלה";
@@ -910,27 +620,11 @@
       }
     }
 
-    function openSettings() {
-      elements.clientIdInput.value = getClientId();
-      elements.settingsModal.classList.add("open");
-      setTimeout(() => elements.clientIdInput.focus(), 0);
-    }
-
-    function closeSettings() {
-      elements.settingsModal.classList.remove("open");
-    }
-
     function initializeTokenClient() {
-      const clientId = getClientId();
-
-      if (!googleLibraryReady || !isValidClientId(clientId)) {
-        tokenClient = null;
-        updateControls();
-        return;
-      }
+      if (!googleLibraryReady) return;
 
       tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: clientId,
+        client_id: CLIENT_ID,
         scope: SCOPES,
         include_granted_scopes: true,
         callback: handleTokenResponse,
@@ -1052,44 +746,6 @@
       return payload;
     }
 
-    elements.settingsButton.addEventListener("click", openSettings);
-    elements.closeSettingsButton.addEventListener("click", closeSettings);
-    elements.cancelSettingsButton.addEventListener("click", closeSettings);
-
-    elements.settingsModal.addEventListener("click", (event) => {
-      if (event.target === elements.settingsModal) closeSettings();
-    });
-
-    elements.saveSettingsButton.addEventListener("click", () => {
-      const clientId = elements.clientIdInput.value.trim();
-      elements.clientIdInput.classList.toggle("invalid", !isValidClientId(clientId));
-
-      if (!isValidClientId(clientId)) {
-        showStatus("ה-OAuth Client ID אינו תקין. הוא צריך להסתיים ב-apps.googleusercontent.com.", "error");
-        return;
-      }
-
-      localStorage.setItem(STORAGE.clientId, clientId);
-      accessToken = "";
-      senderEmail = "";
-      initializeTokenClient();
-      updateConnectionUI();
-      closeSettings();
-      showStatus("הגדרת OAuth נשמרה. עכשיו אפשר להתחבר לחשבון Google.", "success");
-    });
-
-    elements.clearSettingsButton.addEventListener("click", () => {
-      localStorage.removeItem(STORAGE.clientId);
-      accessToken = "";
-      senderEmail = "";
-      tokenClient = null;
-      elements.clientIdInput.value = "";
-      updateConnectionUI();
-      updateControls();
-      closeSettings();
-      showStatus("הגדרת OAuth נמחקה מהדפדפן.", "success");
-    });
-
     elements.connectButton.addEventListener("click", () => {
       clearStatus();
 
@@ -1099,8 +755,7 @@
       }
 
       if (!tokenClient) {
-        showStatus("צריך לפתוח את ההגדרות ולהכניס OAuth Client ID תקין.", "error");
-        openSettings();
+        showStatus("שירות Google עדיין לא נטען. רענן את הדף ונסה שוב.", "error");
         return;
       }
 
@@ -1112,7 +767,6 @@
         if (input === elements.recipient) {
           input.classList.toggle("invalid", input.value.length > 0 && !isValidEmail(input.value));
         }
-        updateCounters();
         updateControls();
       });
     });
@@ -1180,27 +834,14 @@
       }
     });
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closeSettings();
-    });
-
     window.initGoogleLibrary = function initGoogleLibrary() {
       googleLibraryReady = true;
       initializeTokenClient();
-      updateControls();
     };
 
-    elements.originText.textContent = window.location.origin;
-    updateCounters();
     updateConnectionUI();
     updateControls();
     setInterval(updateControls, 1000);
-
-    if (!getClientId()) {
-      setTimeout(() => {
-        showStatus("כדי להתחיל, פתח את ההגדרות והכנס OAuth Client ID מסוג Web application.");
-      }, 300);
-    }
   </script>
 
   <script src="https://accounts.google.com/gsi/client" async defer onload="window.initGoogleLibrary()"></script>
