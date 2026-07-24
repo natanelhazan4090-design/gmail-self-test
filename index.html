@@ -4,403 +4,177 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
-  <meta name="color-scheme" content="dark" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <title>MailFlow — Gmail Sender</title>
   <style>
     :root {
-      --bg: #060b16;
-      --panel: rgba(13, 24, 43, 0.86);
-      --panel-2: rgba(8, 17, 32, 0.76);
-      --border: rgba(170, 193, 255, 0.16);
-      --text: #f6f8ff;
-      --muted: #9eabc8;
-      --primary: #788cff;
-      --primary-2: #586cf0;
-      --success: #51d5a6;
-      --danger: #ff8197;
-      --warning: #ffd274;
+      --bg:#050b16;
+      --panel:rgba(12,24,43,.88);
+      --panel2:rgba(8,17,32,.78);
+      --border:rgba(166,190,255,.17);
+      --text:#f7f9ff;
+      --muted:#9ba9c8;
+      --primary:#7589ff;
+      --primary2:#596df0;
+      --success:#52d6a7;
+      --danger:#ff8198;
+      --warning:#ffd274;
     }
 
-    * { box-sizing: border-box; }
-
-    html { min-height: 100%; background: var(--bg); }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Inter, Arial, sans-serif;
-      color: var(--text);
+    *{box-sizing:border-box}
+    html{min-height:100%;background:var(--bg)}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:Inter,Arial,sans-serif;
+      color:var(--text);
       background:
-        radial-gradient(circle at 12% 10%, rgba(88, 108, 240, .28), transparent 34%),
-        radial-gradient(circle at 88% 82%, rgba(81, 213, 166, .14), transparent 28%),
-        linear-gradient(145deg, #040914, #091426 48%, #07101e);
+        radial-gradient(circle at 12% 10%,rgba(88,108,240,.28),transparent 34%),
+        radial-gradient(circle at 88% 84%,rgba(81,213,166,.14),transparent 28%),
+        linear-gradient(145deg,#040914,#091426 48%,#07101e);
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: .18;
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.18;
       background-image:
-        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
-      background-size: 44px 44px;
-      mask-image: linear-gradient(to bottom, #000, transparent 88%);
+        linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+      background-size:44px 44px;
+      mask-image:linear-gradient(to bottom,#000,transparent 88%);
     }
 
-    button, input, textarea { font: inherit; }
-    button { border: 0; }
+    button,input,textarea{font:inherit}
+    button{border:0}
 
-    .page {
-      position: relative;
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-      padding: 28px 0 44px;
+    .page{
+      position:relative;
+      width:min(1160px,calc(100% - 30px));
+      margin:auto;
+      padding:26px 0 42px;
     }
 
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 27px;
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:25px;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 13px;
+    .brand{display:flex;align-items:center;gap:13px}
+    .logo{
+      width:47px;height:47px;display:grid;place-items:center;
+      border-radius:15px;
+      background:linear-gradient(145deg,#98a5ff,#5b70ee);
+      box-shadow:0 15px 38px rgba(88,108,240,.38);
     }
+    .logo svg{width:25px;height:25px}
+    .brand-name{font-size:21px;font-weight:850;letter-spacing:-.5px}
+    .brand-subtitle{margin-top:2px;color:var(--muted);font-size:12px}
 
-    .brand-mark {
-      width: 47px;
-      height: 47px;
-      display: grid;
-      place-items: center;
-      border-radius: 15px;
-      background: linear-gradient(145deg, #97a5ff, #5b6fee);
-      box-shadow: 0 15px 38px rgba(88, 108, 240, .38);
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;
+      min-height:41px;padding:9px 14px;
+      color:var(--muted);border:1px solid var(--border);
+      border-radius:999px;background:rgba(7,15,29,.78);
+      font-size:13px;
     }
+    .dot{width:8px;height:8px;border-radius:50%;background:#65718a;box-shadow:0 0 0 4px rgba(101,113,138,.12)}
+    .chip.connected{color:#c3f5e3;border-color:rgba(81,213,166,.28)}
+    .chip.connected .dot{background:var(--success);box-shadow:0 0 0 4px rgba(81,213,166,.13)}
 
-    .brand-mark svg { width: 25px; height: 25px; }
-    .brand-name { font-size: 21px; font-weight: 850; letter-spacing: -.5px; }
-    .brand-subtitle { margin-top: 2px; color: var(--muted); font-size: 12px; }
-
-    .status-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 41px;
-      padding: 9px 14px;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: rgba(7, 15, 29, .78);
-      font-size: 13px;
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 315px;gap:24px;align-items:start}
+    .card{
+      border:1px solid var(--border);
+      border-radius:27px;
+      background:var(--panel);
+      backdrop-filter:blur(20px);
+      box-shadow:0 30px 90px rgba(0,0,0,.42);
     }
+    .composer{padding:clamp(23px,4vw,39px)}
+    .eyebrow{display:inline-flex;margin-bottom:13px;color:#bec8ff;font-size:12px;font-weight:850;letter-spacing:1.4px}
+    h1{max-width:760px;margin:0;font-size:clamp(33px,5vw,56px);line-height:1.04;letter-spacing:-1.8px}
+    .lead{max-width:720px;margin:16px 0 28px;color:var(--muted);font-size:16px;line-height:1.75}
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #65718a;
-      box-shadow: 0 0 0 4px rgba(101, 113, 138, .12);
+    .account-bar{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;
+      margin-bottom:23px;padding:14px;
+      border:1px solid var(--border);border-radius:18px;
+      background:rgba(5,13,26,.55);
     }
+    .account-info{display:flex;align-items:center;gap:12px}
+    .avatar{width:39px;height:39px;display:grid;place-items:center;border-radius:12px;color:#d9e0f4;background:linear-gradient(145deg,#192c4e,#11213a);font-weight:850}
+    .small-label{margin-bottom:3px;color:var(--muted);font-size:11px}
+    .account-text{color:#edf1ff;font-size:13px;font-weight:760}
 
-    .status-chip.connected {
-      color: #c3f5e3;
-      border-color: rgba(81, 213, 166, .28);
+    .button{
+      min-height:44px;padding:11px 17px;border-radius:13px;
+      cursor:pointer;font-weight:820;transition:160ms ease;
     }
+    .button:hover:not(:disabled){transform:translateY(-1px)}
+    .button:disabled{opacity:.46;cursor:not-allowed}
+    .button-secondary{color:#e0e6f7;border:1px solid var(--border);background:#12213a}
 
-    .status-chip.connected .status-dot {
-      background: var(--success);
-      box-shadow: 0 0 0 4px rgba(81, 213, 166, .13);
+    .form{display:grid;gap:19px}
+    .field label{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;color:#e1e6f7;font-size:13px;font-weight:760}
+    .field-note{color:#71809f;font-size:11px;font-weight:500}
+    .control{
+      width:100%;color:var(--text);border:1px solid rgba(156,180,229,.18);
+      border-radius:15px;outline:none;background:rgba(5,13,26,.74);transition:150ms ease;
     }
+    input.control{min-height:50px;padding:0 15px}
+    textarea.control{min-height:180px;padding:15px;line-height:1.65;resize:vertical}
+    .control::placeholder{color:#60708f}
+    .control:focus{border-color:rgba(120,140,255,.74);box-shadow:0 0 0 4px rgba(120,140,255,.09)}
+    .control.invalid{border-color:rgba(255,129,151,.7);box-shadow:0 0 0 4px rgba(255,129,151,.07)}
 
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 310px;
-      gap: 24px;
-      align-items: start;
+    .checkbox-row{display:flex;align-items:flex-start;gap:11px;color:var(--muted);font-size:13px;line-height:1.55}
+    .checkbox-row input{width:18px;height:18px;margin-top:1px;accent-color:var(--primary)}
+
+    .send-button{
+      width:100%;min-height:55px;display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      padding:13px 22px;border-radius:16px;color:#fff;
+      background:linear-gradient(135deg,#8798ff,#5d71ef);
+      box-shadow:0 15px 35px rgba(87,106,230,.29);
+      cursor:pointer;font-weight:850;transition:170ms ease;
     }
+    .send-button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 18px 42px rgba(87,106,230,.36)}
+    .send-button:disabled{opacity:.48;cursor:not-allowed;box-shadow:none}
 
-    .card {
-      border: 1px solid var(--border);
-      border-radius: 27px;
-      background: var(--panel);
-      backdrop-filter: blur(20px);
-      box-shadow: 0 30px 90px rgba(0, 0, 0, .42);
+    .status{
+      display:none;margin-top:18px;padding:14px 15px;color:#cbd3e9;
+      border:1px solid var(--border);border-radius:15px;background:rgba(5,13,26,.62);
+      font-size:13px;line-height:1.65;white-space:pre-line;word-break:break-word;
     }
+    .status.visible{display:block}
+    .status.success{color:#c7f6e3;border-color:rgba(81,213,166,.28);background:rgba(24,84,67,.2)}
+    .status.error{color:#ffd2da;border-color:rgba(255,129,151,.28);background:rgba(94,31,47,.2)}
 
-    .composer { padding: clamp(23px, 4vw, 39px); }
+    .side{display:grid;gap:16px}
+    .side-card{padding:22px;border:1px solid var(--border);border-radius:21px;background:var(--panel2);backdrop-filter:blur(16px)}
+    .side-card h2{margin:0 0 14px;font-size:15px}
+    .metric{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid rgba(159,190,255,.09)}
+    .metric:last-child{border-bottom:0}
+    .metric-label{color:var(--muted);font-size:12px}
+    .metric-value{color:#eef2ff;font-size:13px;font-weight:820;word-break:break-all;text-align:left}
+    .help{margin-top:12px;padding-top:12px;color:#8795b3;border-top:1px solid rgba(159,190,255,.09);font-size:11px;line-height:1.65}
+    .footer{margin-top:24px;text-align:center;color:#637391;font-size:11px;line-height:1.6}
 
-    .eyebrow {
-      display: inline-flex;
-      margin-bottom: 13px;
-      color: #bec8ff;
-      font-size: 12px;
-      font-weight: 850;
-      letter-spacing: 1.4px;
-    }
-
-    h1 {
-      max-width: 760px;
-      margin: 0;
-      font-size: clamp(33px, 5vw, 56px);
-      line-height: 1.04;
-      letter-spacing: -1.8px;
-    }
-
-    .lead {
-      max-width: 720px;
-      margin: 16px 0 28px;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.75;
-    }
-
-    .account-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 23px;
-      padding: 14px;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      background: rgba(5, 13, 26, .55);
-    }
-
-    .account-info {
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .avatar {
-      flex: 0 0 auto;
-      width: 39px;
-      height: 39px;
-      display: grid;
-      place-items: center;
-      border-radius: 12px;
-      color: #d9e0f4;
-      background: linear-gradient(145deg, #192c4e, #11213a);
-      font-weight: 850;
-    }
-
-    .account-label { margin-bottom: 3px; color: var(--muted); font-size: 11px; }
-    .account-text { color: #edf1ff; font-size: 13px; font-weight: 760; }
-
-    .button {
-      min-height: 44px;
-      padding: 11px 17px;
-      border-radius: 13px;
-      cursor: pointer;
-      font-weight: 820;
-      transition: 160ms ease;
-    }
-
-    .button:hover:not(:disabled) { transform: translateY(-1px); }
-    .button:disabled { opacity: .46; cursor: not-allowed; }
-
-    .button-secondary {
-      color: #e0e6f7;
-      border: 1px solid var(--border);
-      background: #12213a;
-    }
-
-    .form-grid { display: grid; gap: 19px; }
-
-    .field label {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 8px;
-      color: #e1e6f7;
-      font-size: 13px;
-      font-weight: 760;
-    }
-
-    .field-note { color: #71809f; font-size: 11px; font-weight: 500; }
-
-    .control {
-      width: 100%;
-      color: var(--text);
-      border: 1px solid rgba(156, 180, 229, .18);
-      border-radius: 15px;
-      outline: none;
-      background: rgba(5, 13, 26, .74);
-      transition: 150ms ease;
-    }
-
-    input.control { min-height: 50px; padding: 0 15px; }
-    textarea.control { min-height: 180px; padding: 15px; line-height: 1.65; resize: vertical; }
-    .control::placeholder { color: #60708f; }
-
-    .control:focus {
-      border-color: rgba(120, 140, 255, .74);
-      box-shadow: 0 0 0 4px rgba(120, 140, 255, .09);
-    }
-
-    .control.invalid {
-      border-color: rgba(255, 129, 151, .7);
-      box-shadow: 0 0 0 4px rgba(255, 129, 151, .07);
-    }
-
-    .checkbox-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 11px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.55;
-    }
-
-    .checkbox-row input {
-      width: 18px;
-      height: 18px;
-      margin-top: 1px;
-      accent-color: var(--primary);
-    }
-
-    .send-button {
-      width: 100%;
-      min-height: 55px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 13px 22px;
-      border-radius: 16px;
-      color: #fff;
-      background: linear-gradient(135deg, #8798ff, #5d71ef);
-      box-shadow: 0 15px 35px rgba(87, 106, 230, .29);
-      cursor: pointer;
-      font-weight: 850;
-      transition: 170ms ease;
-    }
-
-    .send-button:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 18px 42px rgba(87, 106, 230, .36);
-    }
-
-    .send-button:disabled { opacity: .48; cursor: not-allowed; box-shadow: none; }
-    .send-button svg { width: 19px; height: 19px; }
-
-    .message-status {
-      display: none;
-      margin-top: 18px;
-      padding: 14px 15px;
-      color: #cbd3e9;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      background: rgba(5, 13, 26, .62);
-      font-size: 13px;
-      line-height: 1.6;
-      white-space: pre-line;
-    }
-
-    .message-status.visible { display: block; }
-    .message-status.success { color: #c7f6e3; border-color: rgba(81, 213, 166, .28); background: rgba(24, 84, 67, .2); }
-    .message-status.error { color: #ffd2da; border-color: rgba(255, 129, 151, .28); background: rgba(94, 31, 47, .2); }
-
-    .side { display: grid; gap: 16px; }
-
-    .side-card {
-      padding: 22px;
-      border: 1px solid var(--border);
-      border-radius: 21px;
-      background: var(--panel-2);
-      backdrop-filter: blur(16px);
-    }
-
-    .side-card h2 { margin: 0 0 14px; font-size: 15px; }
-
-    .metric {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 11px 0;
-      border-bottom: 1px solid rgba(159, 190, 255, .09);
-    }
-
-    .metric:last-child { border-bottom: 0; }
-    .metric-label { color: var(--muted); font-size: 12px; }
-    .metric-value { color: #eef2ff; font-size: 13px; font-weight: 820; }
-
-    .security-list {
-      display: grid;
-      gap: 12px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .security-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .check {
-      flex: 0 0 auto;
-      width: 19px;
-      height: 19px;
-      display: grid;
-      place-items: center;
-      margin-top: 1px;
-      color: #bdf3dd;
-      border-radius: 7px;
-      background: rgba(81, 213, 166, .12);
-      font-size: 11px;
-      font-weight: 900;
-    }
-
-    .help {
-      margin-top: 12px;
-      padding-top: 12px;
-      color: #8391af;
-      border-top: 1px solid rgba(159, 190, 255, .09);
-      font-size: 11px;
-      line-height: 1.6;
-    }
-
-    .footer {
-      margin-top: 24px;
-      text-align: center;
-      color: #637391;
-      font-size: 11px;
-      line-height: 1.6;
-    }
-
-    @media (max-width: 880px) {
-      .layout { grid-template-columns: 1fr; }
-      .side { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-
-    @media (max-width: 620px) {
-      .page { width: min(100% - 20px, 1180px); padding-top: 18px; }
-      .brand-subtitle, .status-chip span:last-child { display: none; }
-      .account-bar { align-items: stretch; flex-direction: column; }
-      .button { width: 100%; }
-      .side { grid-template-columns: 1fr; }
-    }
+    @media(max-width:880px){.layout{grid-template-columns:1fr}.side{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:620px){.page{width:min(100% - 20px,1160px);padding-top:18px}.brand-subtitle{display:none}.account-bar{align-items:stretch;flex-direction:column}.button{width:100%}.side{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
   <div class="page">
     <header class="topbar">
       <div class="brand">
-        <div class="brand-mark" aria-hidden="true">
+        <div class="logo" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none">
             <path d="M4 7.5 12 13l8-5.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
             <rect x="3.5" y="5.5" width="17" height="13" rx="3" stroke="white" stroke-width="1.8" />
@@ -412,118 +186,87 @@
         </div>
       </div>
 
-      <div id="connectionChip" class="status-chip">
-        <span class="status-dot"></span>
+      <div id="connectionChip" class="chip">
+        <span class="dot"></span>
         <span id="connectionText">לא מחובר</span>
       </div>
     </header>
 
     <main class="layout">
       <section class="card composer">
-        <div class="eyebrow">GMAIL API · MINIMAL OAUTH</div>
-        <h1>שליחת אימייל פשוטה ומאובטחת מהדפדפן.</h1>
-        <p class="lead">
-          האתר מבקש רק הרשאת שליחת Gmail. הוא אינו קורא את תיבת הדואר, אינו מבקש סיסמה ואינו קורא את פרטי הפרופיל שלך.
-        </p>
+        <div class="eyebrow">GMAIL API · BUILD V4</div>
+        <h1>שליחת אימייל דרך חשבון Google שלך.</h1>
+        <p class="lead">בחר את חשבון Google המדויק שהוספת כ־Test user, אשר את הרשאת השליחה, ולאחר מכן שלח הודעה אחת לכתובת חוקית.</p>
 
         <div class="account-bar">
           <div class="account-info">
             <div id="accountAvatar" class="avatar">G</div>
             <div>
-              <div class="account-label">חשבון Google</div>
+              <div class="small-label">חשבון Google</div>
               <div id="accountText" class="account-text">עדיין לא התחברת</div>
             </div>
           </div>
-          <button id="connectButton" class="button button-secondary" type="button" disabled>התחברות ל-Google</button>
+          <button id="connectButton" class="button button-secondary" type="button" disabled>בחירת חשבון והתחברות</button>
         </div>
 
-        <form id="mailForm" class="form-grid" novalidate>
+        <form id="mailForm" class="form" novalidate>
           <div class="field">
-            <label for="recipient">
-              כתובת הנמען
-              <span class="field-note">כתובת אימייל חוקית</span>
-            </label>
+            <label for="recipient">כתובת הנמען <span class="field-note">כתובת אימייל חוקית</span></label>
             <input id="recipient" class="control" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="example@gmail.com" required />
           </div>
 
           <div class="field">
-            <label for="subject">
-              נושא
-              <span id="subjectCount" class="field-note">0 / 120</span>
-            </label>
+            <label for="subject">נושא <span id="subjectCount" class="field-note">0 / 120</span></label>
             <input id="subject" class="control" type="text" maxlength="120" placeholder="על מה ההודעה?" required />
           </div>
 
           <div class="field">
-            <label for="message">
-              תוכן ההודעה
-              <span id="messageCount" class="field-note">0 / 5000</span>
-            </label>
+            <label for="message">תוכן ההודעה <span id="messageCount" class="field-note">0 / 5000</span></label>
             <textarea id="message" class="control" maxlength="5000" placeholder="כתוב כאן את ההודעה..." required></textarea>
           </div>
 
           <label class="checkbox-row">
             <input id="consentCheck" type="checkbox" />
-            <span>אני מאשר שהנמען מצפה לקבל ממני את ההודעה ושאינני משתמש באתר לספאם, הטרדה או התחזות.</span>
+            <span>אני מאשר שהנמען מצפה לקבל את ההודעה ושאינני משתמש באתר לספאם, הטרדה או התחזות.</span>
           </label>
 
           <button id="sendButton" class="send-button" type="submit" disabled>
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="m21 3-7.7 18-3.1-7.2L3 10.7 21 3Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M10.2 13.8 21 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-            </svg>
             <span id="sendButtonText">שליחת הודעה</span>
           </button>
         </form>
 
-        <div id="messageStatus" class="message-status" role="status" aria-live="polite"></div>
+        <div id="messageStatus" class="status" role="status" aria-live="polite"></div>
       </section>
 
       <aside class="side">
         <section class="side-card">
-          <h2>מצב השליחה</h2>
-          <div class="metric">
-            <span class="metric-label">הודעות היום</span>
-            <span id="dailyUsage" class="metric-value">0 / 10</span>
-          </div>
-          <div class="metric">
-            <span class="metric-label">המתנה לשליחה הבאה</span>
-            <span id="cooldownValue" class="metric-value">מוכן</span>
-          </div>
-          <div class="metric">
-            <span class="metric-label">שירות Google</span>
-            <span id="apiStatus" class="metric-value">טוען</span>
-          </div>
+          <h2>אבחון חיבור</h2>
+          <div class="metric"><span class="metric-label">גרסה</span><span class="metric-value">V4 MAIN</span></div>
+          <div class="metric"><span class="metric-label">Origin פעיל</span><span id="originValue" class="metric-value"></span></div>
+          <div class="metric"><span class="metric-label">Client project</span><span class="metric-value">473377517040</span></div>
+          <div class="metric"><span class="metric-label">Google library</span><span id="apiStatus" class="metric-value">טוען</span></div>
         </section>
 
         <section class="side-card">
-          <h2>הגנות מובנות</h2>
-          <ul class="security-list">
-            <li><span class="check">✓</span><span>הרשאת Gmail לשליחה בלבד</span></li>
-            <li><span class="check">✓</span><span>אישור מפורש לפני כל הודעה</span></li>
-            <li><span class="check">✓</span><span>דקה המתנה בין שליחות</span></li>
-            <li><span class="check">✓</span><span>עד 10 הודעות ביום בדפדפן</span></li>
-          </ul>
-          <div class="help">
-            במצב Testing רק כתובות שנוספו תחת Test users יכולות להתחבר. כתובת האתר המורשית ב-Google צריכה להיות בדיוק https://natanelhazan4090-design.github.io
-          </div>
+          <h2>מגבלות בטיחות</h2>
+          <div class="metric"><span class="metric-label">הודעות היום</span><span id="dailyUsage" class="metric-value">0 / 10</span></div>
+          <div class="metric"><span class="metric-label">שליחה הבאה</span><span id="cooldownValue" class="metric-value">מוכן</span></div>
+          <div class="help">ב־Google Cloud, ה־OAuth Client חייב להיות מסוג Web application ובאותו פרויקט שבו הוספת את Test user. Authorized JavaScript origin חייב להיות בדיוק: https://natanelhazan4090-design.github.io</div>
         </section>
       </aside>
     </main>
 
-    <footer class="footer">
-      MailFlow משתמש ב-Google OAuth וב-Gmail API. אין להדביק סיסמה, Client Secret או App Password באתר.
-    </footer>
+    <footer class="footer">MailFlow משתמש רק בהרשאת gmail.send. אין להכניס סיסמה, Client Secret או App Password.</footer>
   </div>
 
   <script>
     "use strict";
 
+    const BUILD = "V4-MAIN-2026-07-24";
     const CLIENT_ID = "473377517040-p20ldc92k3tsdl1g93k7q9j1q8l3hs74.apps.googleusercontent.com";
     const SCOPES = "https://www.googleapis.com/auth/gmail.send";
     const COOLDOWN_MS = 60_000;
     const DAILY_LIMIT = 10;
-
     const STORAGE = {
       lastSent: "mailflow_last_sent_at",
       dailyUsage: "mailflow_daily_usage"
@@ -534,13 +277,14 @@
     let accessToken = "";
     let sending = false;
 
-    const elements = {
+    const el = {
       connectionChip: document.getElementById("connectionChip"),
       connectionText: document.getElementById("connectionText"),
       connectButton: document.getElementById("connectButton"),
       accountAvatar: document.getElementById("accountAvatar"),
       accountText: document.getElementById("accountText"),
       apiStatus: document.getElementById("apiStatus"),
+      originValue: document.getElementById("originValue"),
       mailForm: document.getElementById("mailForm"),
       recipient: document.getElementById("recipient"),
       subject: document.getElementById("subject"),
@@ -561,103 +305,87 @@
     }
 
     function todayKey() {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, "0");
-      const day = String(now.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     }
 
     function getDailyUsage() {
       try {
         const value = JSON.parse(localStorage.getItem(STORAGE.dailyUsage) || "null");
-        if (!value || value.date !== todayKey()) return 0;
-        return Math.max(0, Number(value.count) || 0);
+        return value && value.date === todayKey() ? Math.max(0, Number(value.count) || 0) : 0;
       } catch {
         return 0;
       }
     }
 
     function incrementDailyUsage() {
-      localStorage.setItem(
-        STORAGE.dailyUsage,
-        JSON.stringify({ date: todayKey(), count: getDailyUsage() + 1 })
-      );
+      localStorage.setItem(STORAGE.dailyUsage, JSON.stringify({ date: todayKey(), count: getDailyUsage() + 1 }));
     }
 
     function remainingCooldown() {
-      const lastSentAt = Number(localStorage.getItem(STORAGE.lastSent) || 0);
-      return Math.max(0, COOLDOWN_MS - (Date.now() - lastSentAt));
+      return Math.max(0, COOLDOWN_MS - (Date.now() - Number(localStorage.getItem(STORAGE.lastSent) || 0)));
     }
 
     function showStatus(message, type = "info") {
-      elements.messageStatus.textContent = message;
-      elements.messageStatus.className = `message-status visible${type === "info" ? "" : ` ${type}`}`;
+      el.messageStatus.textContent = message;
+      el.messageStatus.className = `status visible${type === "info" ? "" : ` ${type}`}`;
     }
 
     function clearStatus() {
-      elements.messageStatus.textContent = "";
-      elements.messageStatus.className = "message-status";
+      el.messageStatus.textContent = "";
+      el.messageStatus.className = "status";
     }
 
     function updateConnectionUI() {
       const connected = Boolean(accessToken);
-      elements.connectionChip.classList.toggle("connected", connected);
-      elements.connectionText.textContent = connected ? "מחובר" : "לא מחובר";
-      elements.accountText.textContent = connected ? "מחובר לחשבון Google" : "עדיין לא התחברת";
-      elements.accountAvatar.textContent = connected ? "✓" : "G";
-      elements.connectButton.textContent = connected ? "ניתוק" : "התחברות ל-Google";
+      el.connectionChip.classList.toggle("connected", connected);
+      el.connectionText.textContent = connected ? "מחובר" : "לא מחובר";
+      el.accountText.textContent = connected ? "החיבור אושר על ידי Google" : "עדיין לא התחברת";
+      el.accountAvatar.textContent = connected ? "✓" : "G";
+      el.connectButton.textContent = connected ? "ניתוק" : "בחירת חשבון והתחברות";
     }
 
     function updateControls() {
       const usage = getDailyUsage();
       const cooldown = remainingCooldown();
-      const formReady =
-        Boolean(accessToken) &&
-        isValidEmail(elements.recipient.value) &&
-        elements.subject.value.trim().length > 0 &&
-        elements.message.value.trim().length > 0 &&
-        elements.consentCheck.checked &&
-        usage < DAILY_LIMIT &&
-        cooldown === 0 &&
-        !sending;
+      const ready = Boolean(accessToken) && isValidEmail(el.recipient.value) && el.subject.value.trim() && el.message.value.trim() && el.consentCheck.checked && usage < DAILY_LIMIT && cooldown === 0 && !sending;
 
-      elements.connectButton.disabled = !googleLibraryReady;
-      elements.sendButton.disabled = !formReady;
-      elements.dailyUsage.textContent = `${usage} / ${DAILY_LIMIT}`;
-      elements.apiStatus.textContent = googleLibraryReady ? "מוכן" : "טוען";
-      elements.subjectCount.textContent = `${elements.subject.value.length} / 120`;
-      elements.messageCount.textContent = `${elements.message.value.length} / 5000`;
+      el.connectButton.disabled = !googleLibraryReady;
+      el.sendButton.disabled = !ready;
+      el.dailyUsage.textContent = `${usage} / ${DAILY_LIMIT}`;
+      el.subjectCount.textContent = `${el.subject.value.length} / 120`;
+      el.messageCount.textContent = `${el.message.value.length} / 5000`;
 
       if (usage >= DAILY_LIMIT) {
-        elements.cooldownValue.textContent = "המגבלה היומית נוצלה";
-        elements.sendButtonText.textContent = "המגבלה היומית נוצלה";
+        el.cooldownValue.textContent = "המגבלה נוצלה";
+        el.sendButtonText.textContent = "המגבלה היומית נוצלה";
       } else if (cooldown > 0) {
         const seconds = Math.ceil(cooldown / 1000);
-        elements.cooldownValue.textContent = `${seconds} שניות`;
-        elements.sendButtonText.textContent = `אפשר לשלוח בעוד ${seconds} שניות`;
+        el.cooldownValue.textContent = `${seconds} שניות`;
+        el.sendButtonText.textContent = `אפשר לשלוח בעוד ${seconds} שניות`;
       } else {
-        elements.cooldownValue.textContent = "מוכן";
-        elements.sendButtonText.textContent = sending ? "שולח..." : "שליחת הודעה";
+        el.cooldownValue.textContent = "מוכן";
+        el.sendButtonText.textContent = sending ? "שולח..." : "שליחת הודעה";
       }
     }
 
     function explainOAuthError(error) {
-      const value = String(error || "");
+      const raw = typeof error === "string" ? error : JSON.stringify(error || {});
+      const value = raw.toLowerCase();
 
       if (value.includes("access_denied")) {
-        return "Google דחתה את הגישה. ודא שהחשבון המדויק נוסף כ-Test user, שה-Audience מוגדר External, ושלא התחברת לחשבון אחר בחלון Google.";
+        return `Google דחתה את הגישה (access_denied).\nודא שבחרת בדיוק את חשבון ה-Test user, ושה-Client ID שייך לאותו פרויקט.\nBuild: ${BUILD}`;
       }
 
       if (value.includes("origin_mismatch") || value.includes("idpiframe_initialization_failed")) {
-        return "כתובת האתר אינה מורשית ב-OAuth Client. הוסף בדיוק את https://natanelhazan4090-design.github.io תחת Authorized JavaScript origins.";
+        return `Origin לא מורשה. ב-OAuth Client הוסף בדיוק:\n${window.location.origin}\nBuild: ${BUILD}`;
       }
 
       if (value.includes("popup")) {
-        return "חלון ההתחברות נחסם או נסגר. אפשר חלונות קופצים לאתר ונסה שוב.";
+        return `חלון Google נחסם או נסגר. אפשר חלונות קופצים ונסה שוב.\nBuild: ${BUILD}`;
       }
 
-      return `ההתחברות נכשלה: ${value || "שגיאה לא ידועה"}`;
+      return `שגיאת OAuth: ${raw || "unknown"}\nOrigin: ${window.location.origin}\nBuild: ${BUILD}`;
     }
 
     function initializeTokenClient() {
@@ -667,20 +395,20 @@
         client_id: CLIENT_ID,
         scope: SCOPES,
         include_granted_scopes: false,
-        callback: (response) => {
+        callback: response => {
           if (response.error || !response.access_token) {
-            showStatus(explainOAuthError(response.error), "error");
+            showStatus(explainOAuthError(response), "error");
             return;
           }
 
           accessToken = response.access_token;
           updateConnectionUI();
           updateControls();
-          showStatus("התחברת בהצלחה. אפשר למלא כתובת ולשלוח הודעה.", "success");
+          showStatus("התחברת בהצלחה. עכשיו אפשר לשלוח הודעה.", "success");
         },
-        error_callback: (error) => {
+        error_callback: error => {
           console.error("Google OAuth error", error);
-          showStatus(explainOAuthError(error?.type || error), "error");
+          showStatus(explainOAuthError(error), "error");
         }
       });
 
@@ -689,25 +417,19 @@
 
     function disconnect() {
       if (!accessToken) return;
-
-      const tokenToRevoke = accessToken;
+      const token = accessToken;
       accessToken = "";
       updateConnectionUI();
       updateControls();
-
-      google.accounts.oauth2.revoke(tokenToRevoke, () => {
-        showStatus("החשבון נותק בהצלחה.", "success");
-      });
+      google.accounts.oauth2.revoke(token, () => showStatus("החשבון נותק.", "success"));
     }
 
     function bytesToBase64(bytes) {
       let binary = "";
       const chunkSize = 0x8000;
-
-      for (let index = 0; index < bytes.length; index += chunkSize) {
-        binary += String.fromCharCode(...bytes.subarray(index, index + chunkSize));
+      for (let i = 0; i < bytes.length; i += chunkSize) {
+        binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
       }
-
       return btoa(binary);
     }
 
@@ -716,10 +438,7 @@
     }
 
     function encodeBase64Url(value) {
-      return encodeBase64(value)
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=+$/g, "");
+      return encodeBase64(value).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
     }
 
     function encodeHeader(value) {
@@ -727,7 +446,7 @@
     }
 
     async function sendEmail(recipient, subject, message) {
-      const mimeMessage = [
+      const mime = [
         `To: ${recipient}`,
         `Subject: ${encodeHeader(subject)}`,
         "MIME-Version: 1.0",
@@ -737,120 +456,81 @@
         message
       ].join("\r\n");
 
-      const response = await fetch(
-        "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ raw: encodeBase64Url(mimeMessage) })
-        }
-      );
+      const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ raw: encodeBase64Url(mime) })
+      });
 
       let payload = {};
-      try {
-        payload = await response.json();
-      } catch {
-        payload = {};
-      }
+      try { payload = await response.json(); } catch { payload = {}; }
 
       if (!response.ok) {
         if (response.status === 401) {
           accessToken = "";
           updateConnectionUI();
           updateControls();
-          throw new Error("תוקף ההרשאה הסתיים. התחבר מחדש ונסה שוב.");
+          throw new Error("ההרשאה פגה. התחבר מחדש.");
         }
-
         if (response.status === 403) {
-          throw new Error("Google חסמה את הפעולה. ודא ש-Gmail API מופעל ושההרשאה gmail.send נוספה ב-Data Access.");
+          throw new Error("Google החזירה 403. ודא ש-Gmail API מופעל ושה-scope gmail.send מופיע ב-Data Access.");
         }
-
         throw new Error(payload?.error?.message || `Gmail API error ${response.status}`);
       }
 
       return payload;
     }
 
-    elements.connectButton.addEventListener("click", () => {
+    el.connectButton.addEventListener("click", () => {
       clearStatus();
-
       if (accessToken) {
         disconnect();
         return;
       }
-
       if (!tokenClient) {
-        showStatus("שירות Google עדיין לא נטען. רענן את הדף ונסה שוב.", "error");
+        showStatus("ספריית Google עדיין לא נטענה. רענן את העמוד.", "error");
         return;
       }
-
-      tokenClient.requestAccessToken({ prompt: "consent" });
+      tokenClient.requestAccessToken({ prompt: "consent select_account" });
     });
 
-    [elements.recipient, elements.subject, elements.message].forEach((input) => {
+    [el.recipient, el.subject, el.message].forEach(input => {
       input.addEventListener("input", () => {
-        if (input === elements.recipient) {
-          input.classList.toggle("invalid", input.value.length > 0 && !isValidEmail(input.value));
-        }
+        if (input === el.recipient) input.classList.toggle("invalid", input.value.length > 0 && !isValidEmail(input.value));
         updateControls();
       });
     });
 
-    elements.consentCheck.addEventListener("change", updateControls);
+    el.consentCheck.addEventListener("change", updateControls);
 
-    elements.mailForm.addEventListener("submit", async (event) => {
+    el.mailForm.addEventListener("submit", async event => {
       event.preventDefault();
       clearStatus();
 
-      const recipient = elements.recipient.value.trim();
-      const subject = elements.subject.value.replace(/[\r\n]+/g, " ").trim();
-      const message = elements.message.value.trim();
+      const recipient = el.recipient.value.trim();
+      const subject = el.subject.value.replace(/[\r\n]+/g, " ").trim();
+      const message = el.message.value.trim();
 
-      if (!accessToken) {
-        showStatus("צריך להתחבר לחשבון Google לפני השליחה.", "error");
-        return;
-      }
-
-      if (!isValidEmail(recipient)) {
-        elements.recipient.classList.add("invalid");
-        showStatus("כתובת הנמען אינה כתובת אימייל חוקית.", "error");
-        return;
-      }
-
-      if (!subject || !message) {
-        showStatus("צריך למלא נושא ותוכן הודעה.", "error");
-        return;
-      }
-
-      if (!elements.consentCheck.checked) {
-        showStatus("צריך לאשר שהנמען מצפה לקבל את ההודעה.", "error");
-        return;
-      }
-
-      if (getDailyUsage() >= DAILY_LIMIT) {
-        showStatus("הגעת למגבלה היומית של האתר. אפשר לשלוח שוב מחר.", "error");
-        return;
-      }
-
-      if (remainingCooldown() > 0) {
-        showStatus("צריך להמתין לפני שליחת הודעה נוספת.", "error");
-        return;
-      }
-
-      if (!window.confirm(`לשלוח עכשיו הודעה אחת אל ${recipient}?`)) return;
+      if (!accessToken) return showStatus("צריך להתחבר ל-Google לפני השליחה.", "error");
+      if (!isValidEmail(recipient)) return showStatus("כתובת הנמען אינה חוקית.", "error");
+      if (!subject || !message) return showStatus("צריך למלא נושא והודעה.", "error");
+      if (!el.consentCheck.checked) return showStatus("צריך לאשר שהנמען מצפה לקבל את ההודעה.", "error");
+      if (getDailyUsage() >= DAILY_LIMIT) return showStatus("הגעת למגבלה היומית.", "error");
+      if (remainingCooldown() > 0) return showStatus("צריך להמתין לפני הודעה נוספת.", "error");
+      if (!window.confirm(`לשלוח הודעה אחת אל ${recipient}?`)) return;
 
       sending = true;
       updateControls();
-      showStatus("שולח את ההודעה דרך Gmail API...");
+      showStatus("שולח דרך Gmail API...");
 
       try {
         await sendEmail(recipient, subject, message);
         localStorage.setItem(STORAGE.lastSent, String(Date.now()));
         incrementDailyUsage();
-        elements.consentCheck.checked = false;
+        el.consentCheck.checked = false;
         showStatus(`ההודעה נשלחה בהצלחה אל ${recipient}.`, "success");
       } catch (error) {
         console.error(error);
@@ -861,11 +541,13 @@
       }
     });
 
-    window.initGoogleLibrary = function initGoogleLibrary() {
+    window.initGoogleLibrary = function () {
       googleLibraryReady = true;
+      el.apiStatus.textContent = "מוכן";
       initializeTokenClient();
     };
 
+    el.originValue.textContent = window.location.origin;
     updateConnectionUI();
     updateControls();
     setInterval(updateControls, 1000);
