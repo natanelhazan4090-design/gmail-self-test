@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="dark" />
-  <title>MailFlow — Gmail Composer</title>
+  <title>MailFlow — שליחה בלחיצה אחת</title>
   <style>
     :root {
       --bg:#06101f;
-      --panel:rgba(12,24,44,.88);
+      --panel:rgba(12,24,44,.9);
       --border:rgba(166,190,255,.17);
       --text:#f7f9ff;
       --muted:#9eabc8;
@@ -16,144 +16,298 @@
       --primary2:#566cf1;
       --success:#54d7a8;
       --danger:#ff8499;
+      --warning:#ffd274;
     }
     *{box-sizing:border-box}
     body{
-      margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;
-      font-family:Inter,Arial,sans-serif;color:var(--text);
-      background:
-        radial-gradient(circle at 15% 10%,rgba(91,115,255,.28),transparent 34%),
-        radial-gradient(circle at 86% 84%,rgba(84,215,168,.14),transparent 28%),
-        linear-gradient(145deg,#040914,#091426 52%,#07101f);
+      margin:0;min-height:100vh;padding:24px;font-family:Inter,Arial,sans-serif;color:var(--text);
+      background:radial-gradient(circle at 15% 10%,rgba(91,115,255,.28),transparent 34%),radial-gradient(circle at 86% 84%,rgba(84,215,168,.14),transparent 28%),linear-gradient(145deg,#040914,#091426 52%,#07101f)
     }
-    .shell{width:min(920px,100%)}
+    button,input,textarea{font:inherit}
+    .shell{width:min(1050px,100%);margin:0 auto}
     .top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px}
     .brand{display:flex;align-items:center;gap:12px}
     .logo{width:46px;height:46px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(145deg,#98a6ff,#5a70ef);box-shadow:0 15px 38px rgba(88,108,240,.38)}
-    .logo svg{width:24px;height:24px}
-    .brand strong{display:block;font-size:21px}
-    .brand span{display:block;margin-top:2px;color:var(--muted);font-size:12px}
+    .logo svg{width:24px;height:24px}.brand strong{display:block;font-size:21px}.brand span{display:block;margin-top:2px;color:var(--muted);font-size:12px}
     .badge{padding:9px 13px;border:1px solid rgba(84,215,168,.28);border-radius:999px;color:#c8f7e5;background:rgba(24,84,67,.2);font-size:12px;font-weight:800}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:20px;align-items:start}
     .card{padding:clamp(22px,4vw,38px);border:1px solid var(--border);border-radius:28px;background:var(--panel);backdrop-filter:blur(18px);box-shadow:0 30px 90px rgba(0,0,0,.42)}
-    h1{margin:0;font-size:clamp(32px,5vw,54px);line-height:1.04;letter-spacing:-1.6px}
-    .lead{margin:15px 0 28px;color:var(--muted);line-height:1.7}
-    .grid{display:grid;gap:18px}
-    label{display:block;margin-bottom:8px;color:#e3e8f8;font-size:13px;font-weight:800}
-    input,textarea{width:100%;border:1px solid rgba(156,180,229,.2);border-radius:15px;outline:none;background:rgba(5,13,26,.78);color:var(--text);font:inherit;transition:.15s ease}
-    input{height:50px;padding:0 15px}
-    textarea{min-height:190px;padding:15px;resize:vertical;line-height:1.6}
+    h1{margin:0;font-size:clamp(32px,5vw,54px);line-height:1.04;letter-spacing:-1.6px}.lead{margin:15px 0 26px;color:var(--muted);line-height:1.7}
+    .target{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px;padding:14px 15px;border:1px solid var(--border);border-radius:16px;background:rgba(5,13,26,.7)}
+    .target span{color:var(--muted);font-size:12px}.target strong{display:block;margin-top:4px;font-size:14px;direction:ltr;text-align:right}
+    .grid{display:grid;gap:18px}label{display:block;margin-bottom:8px;color:#e3e8f8;font-size:13px;font-weight:800}
+    input,textarea{width:100%;border:1px solid rgba(156,180,229,.2);border-radius:15px;outline:none;background:rgba(5,13,26,.78);color:var(--text);transition:.15s ease}
+    input{height:50px;padding:0 15px}textarea{min-height:210px;padding:15px;resize:vertical;line-height:1.6}
     input:focus,textarea:focus{border-color:rgba(115,136,255,.78);box-shadow:0 0 0 4px rgba(115,136,255,.1)}
-    .invalid{border-color:rgba(255,132,153,.75)!important}
-    .safety{padding:13px 14px;border:1px solid rgba(255,210,116,.17);border-radius:14px;background:rgba(99,72,20,.13);color:#c9bfa8;font-size:12px;line-height:1.6}
-    button{width:100%;min-height:56px;border:0;border-radius:16px;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary2));box-shadow:0 15px 35px rgba(87,106,230,.3);cursor:pointer;font:inherit;font-weight:900;transition:.17s ease}
-    button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 18px 42px rgba(87,106,230,.38)}
-    button:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
-    .status{display:none;margin-top:16px;padding:14px 15px;border:1px solid var(--border);border-radius:15px;background:rgba(5,13,26,.65);color:#cbd4ea;font-size:13px;line-height:1.6}
-    .status.show{display:block}.status.error{color:#ffd3da;border-color:rgba(255,132,153,.28)}
-    .note{margin-top:18px;color:#7483a2;font-size:12px;line-height:1.6;text-align:center}
-    @media(max-width:620px){.top{align-items:flex-start}.badge{display:none}.card{border-radius:22px}}
+    button{min-height:52px;border:0;border-radius:15px;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary2));box-shadow:0 15px 35px rgba(87,106,230,.3);cursor:pointer;font-weight:900;transition:.17s ease}
+    button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 18px 42px rgba(87,106,230,.38)}button:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+    .secondary{color:#e4e9f9;border:1px solid var(--border);background:#13233d;box-shadow:none}.danger{color:#ffc4ce;border:1px solid rgba(255,132,153,.25);background:rgba(94,31,47,.22);box-shadow:none}
+    .status{display:none;margin-top:16px;padding:14px 15px;border:1px solid var(--border);border-radius:15px;background:rgba(5,13,26,.65);color:#cbd4ea;font-size:13px;line-height:1.6;white-space:pre-line}
+    .status.show{display:block}.status.error{color:#ffd3da;border-color:rgba(255,132,153,.28)}.status.success{color:#c8f7e5;border-color:rgba(84,215,168,.28)}
+    .side{display:grid;gap:16px}.side-card{padding:20px;border:1px solid var(--border);border-radius:21px;background:rgba(9,19,35,.82)}.side-card h2{margin:0 0 13px;font-size:15px}
+    .metric{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid rgba(159,190,255,.09);font-size:12px}.metric:last-child{border:0}.metric span{color:var(--muted)}.metric strong{font-size:12px}
+    .setup{display:grid;gap:11px}.setup p{margin:0;color:var(--muted);font-size:12px;line-height:1.6}.setup button{width:100%}
+    .modal-backdrop{position:fixed;inset:0;z-index:20;display:none;place-items:center;padding:18px;background:rgba(2,7,15,.82);backdrop-filter:blur(12px)}.modal-backdrop.open{display:grid}
+    .modal{width:min(600px,100%);padding:25px;border:1px solid var(--border);border-radius:23px;background:#0b172b;box-shadow:0 30px 90px rgba(0,0,0,.55)}.modal h2{margin:0 0 7px}.modal p{margin:0 0 18px;color:var(--muted);font-size:13px;line-height:1.6}.modal-actions{display:flex;gap:10px;margin-top:18px}.modal-actions button{flex:1}
+    .note{margin-top:17px;color:#7483a2;font-size:12px;line-height:1.6;text-align:center}
+    iframe{display:none}
+    @media(max-width:850px){.layout{grid-template-columns:1fr}.side{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:620px){.top{align-items:flex-start}.badge{display:none}.card{border-radius:22px}.side{grid-template-columns:1fr}.modal-actions{flex-direction:column}}
   </style>
 </head>
 <body>
   <main class="shell">
     <header class="top">
       <div class="brand">
-        <div class="logo" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M4 7.5 12 13l8-5.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><rect x="3.5" y="5.5" width="17" height="13" rx="3" stroke="white" stroke-width="1.8"/></svg>
-        </div>
-        <div><strong>MailFlow</strong><span>עובד בלי OAuth ובלי API Key</span></div>
+        <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7.5 12 13l8-5.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/><rect x="3.5" y="5.5" width="17" height="13" rx="3" stroke="white" stroke-width="1.8"/></svg></div>
+        <div><strong>MailFlow</strong><span>שליחה בלחיצה אחת דרך Apps Script</span></div>
       </div>
-      <div class="badge">FIXED · MAIN V2</div>
+      <div class="badge">AUTO SEND · SAFE MODE</div>
     </header>
 
-    <section class="card">
-      <h1>כתוב הודעה ופתח אותה ישירות ב־Gmail.</h1>
-      <p class="lead">מלא כתובת, נושא והודעה. בלחיצה על הכפתור תעבור ישירות ל־Gmail עם כל הפרטים מוכנים. אין חלון קופץ ואין חסימת OAuth.</p>
+    <div class="layout">
+      <section class="card">
+        <h1>כתוב הודעה ושלח בלי לפתוח את Gmail.</h1>
+        <p class="lead">לאחר הגדרה חד־פעמית, הכפתור שולח את ההודעה ישירות דרך חשבון Google שלך. מטעמי בטיחות היעד קבוע לחשבון שלך בלבד.</p>
 
-      <form id="form" class="grid" novalidate>
-        <div>
-          <label for="to">כתובת הנמען</label>
-          <input id="to" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="example@gmail.com" required />
+        <div class="target">
+          <div><span>הנמען המאושר</span><strong>natanelhazan4090@gmail.com</strong></div>
+          <span>קבוע</span>
         </div>
-        <div>
-          <label for="subject">נושא</label>
-          <input id="subject" type="text" maxlength="180" placeholder="נושא ההודעה" required />
-        </div>
-        <div>
-          <label for="messageBody">תוכן ההודעה</label>
-          <textarea id="messageBody" maxlength="10000" placeholder="כתוב כאן את ההודעה..." required></textarea>
-        </div>
-        <div class="safety">המשך רק אם הנמען מצפה לקבל את ההודעה. אין להשתמש באתר לספאם, הטרדה או התחזות.</div>
-        <button id="openButton" type="submit" disabled>פתיחת ההודעה ב־Gmail</button>
-      </form>
 
-      <div id="status" class="status" role="status" aria-live="polite"></div>
-      <div class="note">האתר לא שולח לבד. לאחר המעבר ל־Gmail צריך ללחוץ שם על כפתור השליחה.</div>
-    </section>
+        <form id="mailForm" class="grid" novalidate>
+          <div><label for="subject">נושא</label><input id="subject" maxlength="120" placeholder="נושא ההודעה" required /></div>
+          <div><label for="message">תוכן ההודעה</label><textarea id="message" maxlength="5000" placeholder="כתוב כאן את ההודעה..." required></textarea></div>
+          <button id="sendButton" type="submit" disabled>שליחה אוטומטית</button>
+        </form>
+
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+        <div class="note">מוגבל להודעה אחת בדקה ועד 10 הודעות ביום. אין אפשרות לבחור כמות או לשנות את הנמען.</div>
+      </section>
+
+      <aside class="side">
+        <section class="side-card">
+          <h2>מצב המערכת</h2>
+          <div class="metric"><span>חיבור Apps Script</span><strong id="connectionState">לא מוגדר</strong></div>
+          <div class="metric"><span>הודעות היום</span><strong id="dailyCount">0 / 10</strong></div>
+          <div class="metric"><span>שליחה הבאה</span><strong id="cooldown">מוכן</strong></div>
+        </section>
+        <section class="side-card setup">
+          <h2>הגדרה ראשונית</h2>
+          <p>יש לפרוס פעם אחת את הקובץ <b>Code.gs</b> כ־Google Apps Script Web App ולהדביק כאן את כתובת ה־/exec ואת קוד הגישה.</p>
+          <button id="settingsButton" class="secondary" type="button">פתיחת הגדרות</button>
+          <button id="clearButton" class="danger" type="button">מחיקת החיבור</button>
+        </section>
+      </aside>
+    </div>
   </main>
+
+  <div id="settingsModal" class="modal-backdrop" role="dialog" aria-modal="true">
+    <section class="modal">
+      <h2>חיבור ל־Google Apps Script</h2>
+      <p>הפרטים נשמרים רק בדפדפן הזה. קוד הגישה חייב להיות זהה לערך שהגדרת בתוך <b>Code.gs</b>.</p>
+      <div class="grid">
+        <div><label for="endpoint">Web App URL</label><input id="endpoint" dir="ltr" placeholder="https://script.google.com/macros/s/.../exec" /></div>
+        <div><label for="accessCode">קוד גישה פרטי</label><input id="accessCode" dir="ltr" type="password" minlength="12" placeholder="לפחות 12 תווים" /></div>
+      </div>
+      <div class="modal-actions">
+        <button id="cancelSettings" class="secondary" type="button">ביטול</button>
+        <button id="saveSettings" type="button">שמירת החיבור</button>
+      </div>
+    </section>
+  </div>
+
+  <iframe id="transport" name="mailflowTransport" title="MailFlow transport"></iframe>
 
   <script>
     "use strict";
-    const form = document.getElementById("form");
-    const recipientInput = document.getElementById("to");
-    const subjectInput = document.getElementById("subject");
-    const messageInput = document.getElementById("messageBody");
-    const openButton = document.getElementById("openButton");
-    const statusBox = document.getElementById("status");
+    const RECIPIENT = "natanelhazan4090@gmail.com";
+    const DAILY_LIMIT = 10;
+    const COOLDOWN_MS = 60_000;
+    const STORAGE = {
+      endpoint: "mailflow_apps_script_endpoint",
+      accessCode: "mailflow_apps_script_access_code",
+      daily: "mailflow_daily_usage_v3",
+      lastSent: "mailflow_last_sent_v3"
+    };
 
-    function validEmail(value) {
-      const email = value.trim();
-      return email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+    const el = {
+      form: document.getElementById("mailForm"),
+      subject: document.getElementById("subject"),
+      message: document.getElementById("message"),
+      sendButton: document.getElementById("sendButton"),
+      status: document.getElementById("status"),
+      connectionState: document.getElementById("connectionState"),
+      dailyCount: document.getElementById("dailyCount"),
+      cooldown: document.getElementById("cooldown"),
+      settingsButton: document.getElementById("settingsButton"),
+      clearButton: document.getElementById("clearButton"),
+      modal: document.getElementById("settingsModal"),
+      endpoint: document.getElementById("endpoint"),
+      accessCode: document.getElementById("accessCode"),
+      cancelSettings: document.getElementById("cancelSettings"),
+      saveSettings: document.getElementById("saveSettings"),
+      transport: document.getElementById("transport")
+    };
+
+    let sending = false;
+    let pendingRequestId = "";
+    let responseTimer = 0;
+
+    function todayKey() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
     }
 
-    function updateButton() {
-      const ready = validEmail(recipientInput.value) &&
-        subjectInput.value.trim().length > 0 &&
-        messageInput.value.trim().length > 0;
-
-      openButton.disabled = !ready;
-      recipientInput.classList.toggle(
-        "invalid",
-        recipientInput.value.length > 0 && !validEmail(recipientInput.value)
-      );
+    function getDailyUsage() {
+      try {
+        const data = JSON.parse(localStorage.getItem(STORAGE.daily) || "null");
+        return data && data.date === todayKey() ? Math.max(0, Number(data.count) || 0) : 0;
+      } catch { return 0; }
     }
 
-    [recipientInput, subjectInput, messageInput].forEach(element => {
-      element.addEventListener("input", updateButton);
-      element.addEventListener("change", updateButton);
+    function incrementDailyUsage() {
+      localStorage.setItem(STORAGE.daily, JSON.stringify({ date: todayKey(), count: getDailyUsage() + 1 }));
+    }
+
+    function remainingCooldown() {
+      return Math.max(0, COOLDOWN_MS - (Date.now() - Number(localStorage.getItem(STORAGE.lastSent) || 0)));
+    }
+
+    function getEndpoint() { return (localStorage.getItem(STORAGE.endpoint) || "").trim(); }
+    function getAccessCode() { return localStorage.getItem(STORAGE.accessCode) || ""; }
+
+    function validEndpoint(value) {
+      return /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(value.trim());
+    }
+
+    function configured() {
+      return validEndpoint(getEndpoint()) && getAccessCode().length >= 12;
+    }
+
+    function showStatus(message, type = "info") {
+      el.status.textContent = message;
+      el.status.className = `status show${type === "info" ? "" : ` ${type}`}`;
+    }
+
+    function clearStatus() {
+      el.status.textContent = "";
+      el.status.className = "status";
+    }
+
+    function updateUI() {
+      const cooldown = remainingCooldown();
+      const usage = getDailyUsage();
+      const ready = configured() && el.subject.value.trim() && el.message.value.trim() && !sending && usage < DAILY_LIMIT && cooldown === 0;
+      el.sendButton.disabled = !ready;
+      el.sendButton.textContent = sending ? "שולח..." : "שליחה אוטומטית";
+      el.connectionState.textContent = configured() ? "מחובר" : "לא מוגדר";
+      el.dailyCount.textContent = `${usage} / ${DAILY_LIMIT}`;
+      el.cooldown.textContent = usage >= DAILY_LIMIT ? "המגבלה נוצלה" : cooldown > 0 ? `${Math.ceil(cooldown/1000)} שניות` : "מוכן";
+    }
+
+    function openSettings() {
+      el.endpoint.value = getEndpoint();
+      el.accessCode.value = getAccessCode();
+      el.modal.classList.add("open");
+    }
+
+    function closeSettings() { el.modal.classList.remove("open"); }
+
+    el.settingsButton.addEventListener("click", openSettings);
+    el.cancelSettings.addEventListener("click", closeSettings);
+    el.modal.addEventListener("click", event => { if (event.target === el.modal) closeSettings(); });
+
+    el.saveSettings.addEventListener("click", () => {
+      const endpoint = el.endpoint.value.trim();
+      const accessCode = el.accessCode.value;
+      if (!validEndpoint(endpoint)) return showStatus("כתובת ה-Web App אינה תקינה. היא חייבת להסתיים ב-/exec.", "error");
+      if (accessCode.length < 12) return showStatus("קוד הגישה חייב להכיל לפחות 12 תווים.", "error");
+      localStorage.setItem(STORAGE.endpoint, endpoint);
+      localStorage.setItem(STORAGE.accessCode, accessCode);
+      closeSettings();
+      showStatus("החיבור נשמר. אפשר לשלוח הודעה אוטומטית.", "success");
+      updateUI();
     });
 
-    form.addEventListener("submit", event => {
+    el.clearButton.addEventListener("click", () => {
+      localStorage.removeItem(STORAGE.endpoint);
+      localStorage.removeItem(STORAGE.accessCode);
+      showStatus("החיבור נמחק מהדפדפן.", "success");
+      updateUI();
+    });
+
+    [el.subject, el.message].forEach(input => input.addEventListener("input", updateUI));
+
+    el.form.addEventListener("submit", event => {
       event.preventDefault();
-      statusBox.className = "status";
-      statusBox.textContent = "";
+      clearStatus();
+      if (!configured()) { openSettings(); return showStatus("צריך להשלים קודם את הגדרת Apps Script.", "error"); }
+      if (!el.subject.value.trim() || !el.message.value.trim()) return showStatus("צריך למלא נושא והודעה.", "error");
+      if (remainingCooldown() > 0 || getDailyUsage() >= DAILY_LIMIT) return updateUI();
+      if (!window.confirm(`לשלוח עכשיו הודעה אחת אל ${RECIPIENT}?`)) return;
 
-      const recipient = recipientInput.value.trim();
-      const mailSubject = subjectInput.value.trim();
-      const mailBody = messageInput.value.trim();
+      sending = true;
+      pendingRequestId = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
+      updateUI();
+      showStatus("שולח את ההודעה דרך Google Apps Script...");
 
-      if (!validEmail(recipient) || !mailSubject || !mailBody) {
-        statusBox.textContent = "צריך למלא כתובת חוקית, נושא והודעה.";
-        statusBox.className = "status show error";
-        updateButton();
-        return;
-      }
+      const postForm = document.createElement("form");
+      postForm.method = "POST";
+      postForm.action = getEndpoint();
+      postForm.target = "mailflowTransport";
+      postForm.style.display = "none";
 
-      const approved = window.confirm(
-        `לפתוח עכשיו הודעה מוכנה ב-Gmail עבור ${recipient}?`
-      );
+      const fields = {
+        accessCode: getAccessCode(),
+        requestId: pendingRequestId,
+        subject: el.subject.value.trim(),
+        message: el.message.value.trim()
+      };
 
-      if (!approved) return;
+      Object.entries(fields).forEach(([name, value]) => {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = name;
+        input.value = value;
+        postForm.appendChild(input);
+      });
 
-      const gmailUrl = "https://mail.google.com/mail/?view=cm&fs=1" +
-        "&to=" + encodeURIComponent(recipient) +
-        "&su=" + encodeURIComponent(mailSubject) +
-        "&body=" + encodeURIComponent(mailBody);
+      document.body.appendChild(postForm);
+      postForm.submit();
+      postForm.remove();
 
-      window.location.assign(gmailUrl);
+      clearTimeout(responseTimer);
+      responseTimer = window.setTimeout(() => {
+        if (!sending) return;
+        sending = false;
+        pendingRequestId = "";
+        showStatus("לא התקבלה תשובה מהשרת. בדוק שפרסת את Apps Script כ-Web App עם גישה ל-Anyone ושכתובת ה-/exec נכונה.", "error");
+        updateUI();
+      }, 20_000);
     });
 
-    updateButton();
+    window.addEventListener("message", event => {
+      const data = event.data;
+      if (!data || data.type !== "mailflow-result" || data.requestId !== pendingRequestId) return;
+      clearTimeout(responseTimer);
+      sending = false;
+      pendingRequestId = "";
+
+      if (data.ok) {
+        localStorage.setItem(STORAGE.lastSent, String(Date.now()));
+        incrementDailyUsage();
+        el.subject.value = "";
+        el.message.value = "";
+        showStatus(data.message || "ההודעה נשלחה בהצלחה.", "success");
+      } else {
+        showStatus(data.message || "השליחה נכשלה.", "error");
+      }
+      updateUI();
+    });
+
+    updateUI();
+    setInterval(updateUI, 1000);
   </script>
 </body>
 </html>
