@@ -9,16 +9,16 @@
   <style>
     :root {
       --bg: #060b16;
-      --panel: rgba(13, 24, 43, 0.82);
-      --panel-2: rgba(9, 18, 34, 0.78);
-      --border: rgba(168, 190, 255, 0.16);
+      --panel: rgba(13, 24, 43, 0.86);
+      --panel-2: rgba(8, 17, 32, 0.76);
+      --border: rgba(170, 193, 255, 0.16);
       --text: #f6f8ff;
-      --muted: #9ba8c7;
-      --primary: #7588ff;
-      --primary-2: #566cf0;
-      --success: #4fd3a5;
-      --danger: #ff7f94;
-      --warning: #ffd173;
+      --muted: #9eabc8;
+      --primary: #788cff;
+      --primary-2: #586cf0;
+      --success: #51d5a6;
+      --danger: #ff8197;
+      --warning: #ffd274;
     }
 
     * { box-sizing: border-box; }
@@ -31,8 +31,8 @@
       font-family: Inter, Arial, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 12% 12%, rgba(91, 113, 255, .25), transparent 32%),
-        radial-gradient(circle at 88% 85%, rgba(50, 211, 164, .14), transparent 28%),
+        radial-gradient(circle at 12% 10%, rgba(88, 108, 240, .28), transparent 34%),
+        radial-gradient(circle at 88% 82%, rgba(81, 213, 166, .14), transparent 28%),
         linear-gradient(145deg, #040914, #091426 48%, #07101e);
     }
 
@@ -41,7 +41,7 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      opacity: .2;
+      opacity: .18;
       background-image:
         linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
@@ -50,14 +50,13 @@
     }
 
     button, input, textarea { font: inherit; }
-
     button { border: 0; }
 
     .page {
       position: relative;
       width: min(1180px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 28px 0 42px;
+      padding: 28px 0 44px;
     }
 
     .topbar {
@@ -65,7 +64,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 26px;
+      margin-bottom: 27px;
     }
 
     .brand {
@@ -75,13 +74,13 @@
     }
 
     .brand-mark {
-      width: 46px;
-      height: 46px;
+      width: 47px;
+      height: 47px;
       display: grid;
       place-items: center;
       border-radius: 15px;
-      background: linear-gradient(145deg, #96a4ff, #5c70ef);
-      box-shadow: 0 14px 38px rgba(88, 108, 238, .36);
+      background: linear-gradient(145deg, #97a5ff, #5b6fee);
+      box-shadow: 0 15px 38px rgba(88, 108, 240, .38);
     }
 
     .brand-mark svg { width: 25px; height: 25px; }
@@ -94,10 +93,10 @@
       gap: 8px;
       min-height: 41px;
       padding: 9px 14px;
+      color: var(--muted);
       border: 1px solid var(--border);
       border-radius: 999px;
-      background: rgba(7, 15, 29, .76);
-      color: var(--muted);
+      background: rgba(7, 15, 29, .78);
       font-size: 13px;
     }
 
@@ -110,13 +109,13 @@
     }
 
     .status-chip.connected {
-      color: #c3f5e2;
-      border-color: rgba(79, 211, 165, .28);
+      color: #c3f5e3;
+      border-color: rgba(81, 213, 166, .28);
     }
 
     .status-chip.connected .status-dot {
       background: var(--success);
-      box-shadow: 0 0 0 4px rgba(79, 211, 165, .13);
+      box-shadow: 0 0 0 4px rgba(81, 213, 166, .13);
     }
 
     .layout {
@@ -138,18 +137,16 @@
 
     .eyebrow {
       display: inline-flex;
-      align-items: center;
-      gap: 8px;
       margin-bottom: 13px;
-      color: #bdc6ff;
+      color: #bec8ff;
       font-size: 12px;
       font-weight: 850;
       letter-spacing: 1.4px;
     }
 
     h1 {
-      margin: 0;
       max-width: 760px;
+      margin: 0;
       font-size: clamp(33px, 5vw, 56px);
       line-height: 1.04;
       letter-spacing: -1.8px;
@@ -168,11 +165,11 @@
       align-items: center;
       justify-content: space-between;
       gap: 14px;
-      padding: 14px;
       margin-bottom: 23px;
+      padding: 14px;
       border: 1px solid var(--border);
-      border-radius: 17px;
-      background: rgba(4, 12, 25, .55);
+      border-radius: 18px;
+      background: rgba(5, 13, 26, .55);
     }
 
     .account-info {
@@ -189,20 +186,20 @@
       display: grid;
       place-items: center;
       border-radius: 12px;
-      color: #d2d9ef;
-      background: linear-gradient(145deg, #1a2e51, #11203a);
+      color: #d9e0f4;
+      background: linear-gradient(145deg, #192c4e, #11213a);
       font-weight: 850;
     }
 
     .account-label { margin-bottom: 3px; color: var(--muted); font-size: 11px; }
-    .account-email { overflow: hidden; color: #eef2ff; font-size: 13px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+    .account-text { color: #edf1ff; font-size: 13px; font-weight: 760; }
 
     .button {
-      min-height: 45px;
+      min-height: 44px;
       padding: 11px 17px;
       border-radius: 13px;
       cursor: pointer;
-      font-weight: 850;
+      font-weight: 820;
       transition: 160ms ease;
     }
 
@@ -225,10 +222,10 @@
       margin-bottom: 8px;
       color: #e1e6f7;
       font-size: 13px;
-      font-weight: 780;
+      font-weight: 760;
     }
 
-    .field-note { color: #7281a0; font-size: 11px; font-weight: 500; }
+    .field-note { color: #71809f; font-size: 11px; font-weight: 500; }
 
     .control {
       width: 100%;
@@ -236,22 +233,22 @@
       border: 1px solid rgba(156, 180, 229, .18);
       border-radius: 15px;
       outline: none;
-      background: rgba(4, 12, 25, .72);
+      background: rgba(5, 13, 26, .74);
       transition: 150ms ease;
     }
 
-    input.control { min-height: 51px; padding: 0 15px; }
-    textarea.control { min-height: 185px; padding: 15px; line-height: 1.65; resize: vertical; }
-    .control::placeholder { color: #62718f; }
+    input.control { min-height: 50px; padding: 0 15px; }
+    textarea.control { min-height: 180px; padding: 15px; line-height: 1.65; resize: vertical; }
+    .control::placeholder { color: #60708f; }
 
     .control:focus {
-      border-color: rgba(117, 136, 255, .74);
-      box-shadow: 0 0 0 4px rgba(117, 136, 255, .09);
+      border-color: rgba(120, 140, 255, .74);
+      box-shadow: 0 0 0 4px rgba(120, 140, 255, .09);
     }
 
     .control.invalid {
-      border-color: rgba(255, 127, 148, .68);
-      box-shadow: 0 0 0 4px rgba(255, 127, 148, .07);
+      border-color: rgba(255, 129, 151, .7);
+      box-shadow: 0 0 0 4px rgba(255, 129, 151, .07);
     }
 
     .checkbox-row {
@@ -280,16 +277,16 @@
       padding: 13px 22px;
       border-radius: 16px;
       color: #fff;
-      background: linear-gradient(135deg, #8796ff, #5d72ef);
+      background: linear-gradient(135deg, #8798ff, #5d71ef);
       box-shadow: 0 15px 35px rgba(87, 106, 230, .29);
       cursor: pointer;
-      font-weight: 870;
+      font-weight: 850;
       transition: 170ms ease;
     }
 
     .send-button:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 18px 43px rgba(87, 106, 230, .37);
+      box-shadow: 0 18px 42px rgba(87, 106, 230, .36);
     }
 
     .send-button:disabled { opacity: .48; cursor: not-allowed; box-shadow: none; }
@@ -299,17 +296,18 @@
       display: none;
       margin-top: 18px;
       padding: 14px 15px;
+      color: #cbd3e9;
       border: 1px solid var(--border);
       border-radius: 15px;
-      color: #cbd3ea;
-      background: rgba(4, 12, 25, .6);
+      background: rgba(5, 13, 26, .62);
       font-size: 13px;
-      line-height: 1.55;
+      line-height: 1.6;
+      white-space: pre-line;
     }
 
     .message-status.visible { display: block; }
-    .message-status.success { color: #c7f6e3; border-color: rgba(79, 211, 165, .29); background: rgba(24, 84, 67, .2); }
-    .message-status.error { color: #ffd0d8; border-color: rgba(255, 127, 148, .29); background: rgba(94, 31, 47, .2); }
+    .message-status.success { color: #c7f6e3; border-color: rgba(81, 213, 166, .28); background: rgba(24, 84, 67, .2); }
+    .message-status.error { color: #ffd2da; border-color: rgba(255, 129, 151, .28); background: rgba(94, 31, 47, .2); }
 
     .side { display: grid; gap: 16px; }
 
@@ -334,9 +332,15 @@
 
     .metric:last-child { border-bottom: 0; }
     .metric-label { color: var(--muted); font-size: 12px; }
-    .metric-value { color: #eef2ff; font-size: 13px; font-weight: 850; }
+    .metric-value { color: #eef2ff; font-size: 13px; font-weight: 820; }
 
-    .security-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .security-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
 
     .security-list li {
       display: flex;
@@ -354,14 +358,29 @@
       display: grid;
       place-items: center;
       margin-top: 1px;
+      color: #bdf3dd;
       border-radius: 7px;
-      color: #bff4df;
-      background: rgba(79, 211, 165, .12);
+      background: rgba(81, 213, 166, .12);
       font-size: 11px;
       font-weight: 900;
     }
 
-    .footer { margin-top: 24px; text-align: center; color: #667593; font-size: 11px; line-height: 1.6; }
+    .help {
+      margin-top: 12px;
+      padding-top: 12px;
+      color: #8391af;
+      border-top: 1px solid rgba(159, 190, 255, .09);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+      color: #637391;
+      font-size: 11px;
+      line-height: 1.6;
+    }
 
     @media (max-width: 880px) {
       .layout { grid-template-columns: 1fr; }
@@ -371,7 +390,6 @@
     @media (max-width: 620px) {
       .page { width: min(100% - 20px, 1180px); padding-top: 18px; }
       .brand-subtitle, .status-chip span:last-child { display: none; }
-      .composer { border-radius: 22px; }
       .account-bar { align-items: stretch; flex-direction: column; }
       .button { width: 100%; }
       .side { grid-template-columns: 1fr; }
@@ -402,18 +420,18 @@
 
     <main class="layout">
       <section class="card composer">
-        <div class="eyebrow">GMAIL API · SECURE OAUTH</div>
-        <h1>שליחת אימייל נקייה, מהירה ומאובטחת.</h1>
+        <div class="eyebrow">GMAIL API · MINIMAL OAUTH</div>
+        <h1>שליחת אימייל פשוטה ומאובטחת מהדפדפן.</h1>
         <p class="lead">
-          התחבר לחשבון Google, הזן כתובת אימייל חוקית ושלח הודעה אחת. סיסמת החשבון אינה נמסרת לאתר.
+          האתר מבקש רק הרשאת שליחת Gmail. הוא אינו קורא את תיבת הדואר, אינו מבקש סיסמה ואינו קורא את פרטי הפרופיל שלך.
         </p>
 
         <div class="account-bar">
           <div class="account-info">
             <div id="accountAvatar" class="avatar">G</div>
-            <div style="min-width:0">
-              <div class="account-label">חשבון שולח</div>
-              <div id="accountEmail" class="account-email">עדיין לא התחברת לחשבון Google</div>
+            <div>
+              <div class="account-label">חשבון Google</div>
+              <div id="accountText" class="account-text">עדיין לא התחברת</div>
             </div>
           </div>
           <button id="connectButton" class="button button-secondary" type="button" disabled>התחברות ל-Google</button>
@@ -423,7 +441,7 @@
           <div class="field">
             <label for="recipient">
               כתובת הנמען
-              <span class="field-note">כל כתובת אימייל חוקית</span>
+              <span class="field-note">כתובת אימייל חוקית</span>
             </label>
             <input id="recipient" class="control" type="email" inputmode="email" autocomplete="email" maxlength="254" placeholder="example@gmail.com" required />
           </div>
@@ -473,25 +491,28 @@
             <span id="cooldownValue" class="metric-value">מוכן</span>
           </div>
           <div class="metric">
-            <span class="metric-label">Google OAuth</span>
-            <span id="apiStatus" class="metric-value">נטען</span>
+            <span class="metric-label">שירות Google</span>
+            <span id="apiStatus" class="metric-value">טוען</span>
           </div>
         </section>
 
         <section class="side-card">
           <h2>הגנות מובנות</h2>
           <ul class="security-list">
+            <li><span class="check">✓</span><span>הרשאת Gmail לשליחה בלבד</span></li>
             <li><span class="check">✓</span><span>אישור מפורש לפני כל הודעה</span></li>
             <li><span class="check">✓</span><span>דקה המתנה בין שליחות</span></li>
             <li><span class="check">✓</span><span>עד 10 הודעות ביום בדפדפן</span></li>
-            <li><span class="check">✓</span><span>ללא שמירת סיסמת Gmail</span></li>
           </ul>
+          <div class="help">
+            במצב Testing רק כתובות שנוספו תחת Test users יכולות להתחבר. כתובת האתר המורשית ב-Google צריכה להיות בדיוק https://natanelhazan4090-design.github.io
+          </div>
         </section>
       </aside>
     </main>
 
     <footer class="footer">
-      MailFlow משתמש ב-Google OAuth וב-Gmail API. אין למסור לאתר Client Secret, סיסמה או App Password.
+      MailFlow משתמש ב-Google OAuth וב-Gmail API. אין להדביק סיסמה, Client Secret או App Password באתר.
     </footer>
   </div>
 
@@ -499,7 +520,7 @@
     "use strict";
 
     const CLIENT_ID = "473377517040-p20ldc92k3tsdl1g93k7q9j1q8l3hs74.apps.googleusercontent.com";
-    const SCOPES = "openid email https://www.googleapis.com/auth/gmail.send";
+    const SCOPES = "https://www.googleapis.com/auth/gmail.send";
     const COOLDOWN_MS = 60_000;
     const DAILY_LIMIT = 10;
 
@@ -511,7 +532,6 @@
     let googleLibraryReady = false;
     let tokenClient = null;
     let accessToken = "";
-    let senderEmail = "";
     let sending = false;
 
     const elements = {
@@ -519,7 +539,7 @@
       connectionText: document.getElementById("connectionText"),
       connectButton: document.getElementById("connectButton"),
       accountAvatar: document.getElementById("accountAvatar"),
-      accountEmail: document.getElementById("accountEmail"),
+      accountText: document.getElementById("accountText"),
       apiStatus: document.getElementById("apiStatus"),
       mailForm: document.getElementById("mailForm"),
       recipient: document.getElementById("recipient"),
@@ -559,8 +579,10 @@
     }
 
     function incrementDailyUsage() {
-      const count = getDailyUsage() + 1;
-      localStorage.setItem(STORAGE.dailyUsage, JSON.stringify({ date: todayKey(), count }));
+      localStorage.setItem(
+        STORAGE.dailyUsage,
+        JSON.stringify({ date: todayKey(), count: getDailyUsage() + 1 })
+      );
     }
 
     function remainingCooldown() {
@@ -579,11 +601,11 @@
     }
 
     function updateConnectionUI() {
-      const connected = Boolean(accessToken && senderEmail);
+      const connected = Boolean(accessToken);
       elements.connectionChip.classList.toggle("connected", connected);
       elements.connectionText.textContent = connected ? "מחובר" : "לא מחובר";
-      elements.accountEmail.textContent = connected ? senderEmail : "עדיין לא התחברת לחשבון Google";
-      elements.accountAvatar.textContent = connected ? senderEmail.charAt(0).toUpperCase() : "G";
+      elements.accountText.textContent = connected ? "מחובר לחשבון Google" : "עדיין לא התחברת";
+      elements.accountAvatar.textContent = connected ? "✓" : "G";
       elements.connectButton.textContent = connected ? "ניתוק" : "התחברות ל-Google";
     }
 
@@ -591,7 +613,7 @@
       const usage = getDailyUsage();
       const cooldown = remainingCooldown();
       const formReady =
-        Boolean(accessToken && senderEmail) &&
+        Boolean(accessToken) &&
         isValidEmail(elements.recipient.value) &&
         elements.subject.value.trim().length > 0 &&
         elements.message.value.trim().length > 0 &&
@@ -620,63 +642,60 @@
       }
     }
 
+    function explainOAuthError(error) {
+      const value = String(error || "");
+
+      if (value.includes("access_denied")) {
+        return "Google דחתה את הגישה. ודא שהחשבון המדויק נוסף כ-Test user, שה-Audience מוגדר External, ושלא התחברת לחשבון אחר בחלון Google.";
+      }
+
+      if (value.includes("origin_mismatch") || value.includes("idpiframe_initialization_failed")) {
+        return "כתובת האתר אינה מורשית ב-OAuth Client. הוסף בדיוק את https://natanelhazan4090-design.github.io תחת Authorized JavaScript origins.";
+      }
+
+      if (value.includes("popup")) {
+        return "חלון ההתחברות נחסם או נסגר. אפשר חלונות קופצים לאתר ונסה שוב.";
+      }
+
+      return `ההתחברות נכשלה: ${value || "שגיאה לא ידועה"}`;
+    }
+
     function initializeTokenClient() {
       if (!googleLibraryReady) return;
 
       tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
         scope: SCOPES,
-        include_granted_scopes: true,
-        callback: handleTokenResponse,
+        include_granted_scopes: false,
+        callback: (response) => {
+          if (response.error || !response.access_token) {
+            showStatus(explainOAuthError(response.error), "error");
+            return;
+          }
+
+          accessToken = response.access_token;
+          updateConnectionUI();
+          updateControls();
+          showStatus("התחברת בהצלחה. אפשר למלא כתובת ולשלוח הודעה.", "success");
+        },
         error_callback: (error) => {
           console.error("Google OAuth error", error);
-          showStatus("חלון ההתחברות נסגר, נחסם או שההתחברות נכשלה.", "error");
+          showStatus(explainOAuthError(error?.type || error), "error");
         }
       });
 
       updateControls();
     }
 
-    async function handleTokenResponse(response) {
-      if (response.error || !response.access_token) {
-        showStatus(`ההתחברות נכשלה: ${response.error || "לא התקבל Access Token"}`, "error");
-        return;
-      }
-
-      accessToken = response.access_token;
-
-      try {
-        const profileResponse = await fetch("https://openidconnect.googleapis.com/v1/userinfo", {
-          headers: { Authorization: `Bearer ${accessToken}` }
-        });
-
-        if (!profileResponse.ok) throw new Error(`UserInfo ${profileResponse.status}`);
-
-        const profile = await profileResponse.json();
-        if (!profile.email) throw new Error("Google did not return an email address");
-
-        senderEmail = profile.email;
-        updateConnectionUI();
-        updateControls();
-        showStatus(`התחברת בהצלחה באמצעות ${senderEmail}.`, "success");
-      } catch (error) {
-        console.error(error);
-        accessToken = "";
-        senderEmail = "";
-        updateConnectionUI();
-        updateControls();
-        showStatus("התחברת, אבל לא הצלחתי לקרוא את כתובת החשבון. נסה להתחבר מחדש.", "error");
-      }
-    }
-
     function disconnect() {
       if (!accessToken) return;
 
-      google.accounts.oauth2.revoke(accessToken, () => {
-        accessToken = "";
-        senderEmail = "";
-        updateConnectionUI();
-        updateControls();
+      const tokenToRevoke = accessToken;
+      accessToken = "";
+      updateConnectionUI();
+      updateControls();
+
+      google.accounts.oauth2.revoke(tokenToRevoke, () => {
         showStatus("החשבון נותק בהצלחה.", "success");
       });
     }
@@ -684,9 +703,11 @@
     function bytesToBase64(bytes) {
       let binary = "";
       const chunkSize = 0x8000;
+
       for (let index = 0; index < bytes.length; index += chunkSize) {
         binary += String.fromCharCode(...bytes.subarray(index, index + chunkSize));
       }
+
       return btoa(binary);
     }
 
@@ -708,7 +729,6 @@
     async function sendEmail(recipient, subject, message) {
       const mimeMessage = [
         `To: ${recipient}`,
-        `From: ${senderEmail}`,
         `Subject: ${encodeHeader(subject)}`,
         "MIME-Version: 1.0",
         'Content-Type: text/plain; charset="UTF-8"',
@@ -717,14 +737,17 @@
         message
       ].join("\r\n");
 
-      const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ raw: encodeBase64Url(mimeMessage) })
-      });
+      const response = await fetch(
+        "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ raw: encodeBase64Url(mimeMessage) })
+        }
+      );
 
       let payload = {};
       try {
@@ -736,10 +759,15 @@
       if (!response.ok) {
         if (response.status === 401) {
           accessToken = "";
-          senderEmail = "";
           updateConnectionUI();
+          updateControls();
           throw new Error("תוקף ההרשאה הסתיים. התחבר מחדש ונסה שוב.");
         }
+
+        if (response.status === 403) {
+          throw new Error("Google חסמה את הפעולה. ודא ש-Gmail API מופעל ושההרשאה gmail.send נוספה ב-Data Access.");
+        }
+
         throw new Error(payload?.error?.message || `Gmail API error ${response.status}`);
       }
 
@@ -781,7 +809,7 @@
       const subject = elements.subject.value.replace(/[\r\n]+/g, " ").trim();
       const message = elements.message.value.trim();
 
-      if (!accessToken || !senderEmail) {
+      if (!accessToken) {
         showStatus("צריך להתחבר לחשבון Google לפני השליחה.", "error");
         return;
       }
@@ -812,8 +840,7 @@
         return;
       }
 
-      const approved = window.confirm(`לשלוח עכשיו הודעה אחת אל ${recipient}?`);
-      if (!approved) return;
+      if (!window.confirm(`לשלוח עכשיו הודעה אחת אל ${recipient}?`)) return;
 
       sending = true;
       updateControls();
