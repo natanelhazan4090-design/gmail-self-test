@@ -8,7 +8,7 @@
   <style>
     :root {
       --bg:#06101f;
-      --panel:rgba(12,24,44,.86);
+      --panel:rgba(12,24,44,.88);
       --border:rgba(166,190,255,.17);
       --text:#f7f9ff;
       --muted:#9eabc8;
@@ -44,8 +44,7 @@
     textarea{min-height:190px;padding:15px;resize:vertical;line-height:1.6}
     input:focus,textarea:focus{border-color:rgba(115,136,255,.78);box-shadow:0 0 0 4px rgba(115,136,255,.1)}
     .invalid{border-color:rgba(255,132,153,.75)!important}
-    .check{display:flex;align-items:flex-start;gap:10px;color:var(--muted);font-size:13px;line-height:1.55}
-    .check input{width:18px;height:18px;margin-top:1px;accent-color:var(--primary)}
+    .safety{padding:13px 14px;border:1px solid rgba(255,210,116,.17);border-radius:14px;background:rgba(99,72,20,.13);color:#c9bfa8;font-size:12px;line-height:1.6}
     button{width:100%;min-height:56px;border:0;border-radius:16px;color:#fff;background:linear-gradient(135deg,var(--primary),var(--primary2));box-shadow:0 15px 35px rgba(87,106,230,.3);cursor:pointer;font:inherit;font-weight:900;transition:.17s ease}
     button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 18px 42px rgba(87,106,230,.38)}
     button:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
@@ -64,12 +63,12 @@
         </div>
         <div><strong>MailFlow</strong><span>עובד בלי OAuth ובלי API Key</span></div>
       </div>
-      <div class="badge">READY · MAIN</div>
+      <div class="badge">FIXED · MAIN V2</div>
     </header>
 
     <section class="card">
       <h1>כתוב הודעה ופתח אותה ישירות ב־Gmail.</h1>
-      <p class="lead">האתר ממלא עבורך את כתובת הנמען, הנושא והתוכן. לאחר מכן Gmail נפתח בחלון חדש, ואתה לוחץ שם על שליחה. אין התחברות דרך האתר ואין חסימת OAuth.</p>
+      <p class="lead">מלא כתובת, נושא והודעה. בלחיצה על הכפתור תעבור ישירות ל־Gmail עם כל הפרטים מוכנים. אין חלון קופץ ואין חסימת OAuth.</p>
 
       <form id="form" class="grid" novalidate>
         <div>
@@ -81,79 +80,80 @@
           <input id="subject" type="text" maxlength="180" placeholder="נושא ההודעה" required />
         </div>
         <div>
-          <label for="body">תוכן ההודעה</label>
-          <textarea id="body" maxlength="10000" placeholder="כתוב כאן את ההודעה..." required></textarea>
+          <label for="messageBody">תוכן ההודעה</label>
+          <textarea id="messageBody" maxlength="10000" placeholder="כתוב כאן את ההודעה..." required></textarea>
         </div>
-        <label class="check">
-          <input id="consent" type="checkbox" />
-          <span>אני מאשר שהנמען מצפה לקבל את ההודעה ושאינני משתמש באתר לספאם, הטרדה או התחזות.</span>
-        </label>
+        <div class="safety">המשך רק אם הנמען מצפה לקבל את ההודעה. אין להשתמש באתר לספאם, הטרדה או התחזות.</div>
         <button id="openButton" type="submit" disabled>פתיחת ההודעה ב־Gmail</button>
       </form>
 
       <div id="status" class="status" role="status" aria-live="polite"></div>
-      <div class="note">האתר לא שולח לבד ולא שומר סיסמאות. השליחה מתבצעת רק לאחר לחיצה על כפתור השליחה בתוך Gmail.</div>
+      <div class="note">האתר לא שולח לבד. לאחר המעבר ל־Gmail צריך ללחוץ שם על כפתור השליחה.</div>
     </section>
   </main>
 
   <script>
     "use strict";
     const form = document.getElementById("form");
-    const to = document.getElementById("to");
-    const subject = document.getElementById("subject");
-    const body = document.getElementById("body");
-    const consent = document.getElementById("consent");
+    const recipientInput = document.getElementById("to");
+    const subjectInput = document.getElementById("subject");
+    const messageInput = document.getElementById("messageBody");
     const openButton = document.getElementById("openButton");
-    const status = document.getElementById("status");
+    const statusBox = document.getElementById("status");
 
     function validEmail(value) {
       const email = value.trim();
       return email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
     }
 
-    function update() {
-      const ready = validEmail(to.value) && subject.value.trim() && body.value.trim() && consent.checked;
+    function updateButton() {
+      const ready = validEmail(recipientInput.value) &&
+        subjectInput.value.trim().length > 0 &&
+        messageInput.value.trim().length > 0;
+
       openButton.disabled = !ready;
-      to.classList.toggle("invalid", to.value.length > 0 && !validEmail(to.value));
+      recipientInput.classList.toggle(
+        "invalid",
+        recipientInput.value.length > 0 && !validEmail(recipientInput.value)
+      );
     }
 
-    [to, subject, body].forEach(element => element.addEventListener("input", update));
-    consent.addEventListener("change", update);
+    [recipientInput, subjectInput, messageInput].forEach(element => {
+      element.addEventListener("input", updateButton);
+      element.addEventListener("change", updateButton);
+    });
 
     form.addEventListener("submit", event => {
       event.preventDefault();
-      status.className = "status";
-      status.textContent = "";
+      statusBox.className = "status";
+      statusBox.textContent = "";
 
-      const recipient = to.value.trim();
-      const mailSubject = subject.value.trim();
-      const mailBody = body.value.trim();
+      const recipient = recipientInput.value.trim();
+      const mailSubject = subjectInput.value.trim();
+      const mailBody = messageInput.value.trim();
 
-      if (!validEmail(recipient) || !mailSubject || !mailBody || !consent.checked) {
-        status.textContent = "צריך למלא כתובת חוקית, נושא, הודעה ואישור.";
-        status.className = "status show error";
+      if (!validEmail(recipient) || !mailSubject || !mailBody) {
+        statusBox.textContent = "צריך למלא כתובת חוקית, נושא והודעה.";
+        statusBox.className = "status show error";
+        updateButton();
         return;
       }
+
+      const approved = window.confirm(
+        `לפתוח עכשיו הודעה מוכנה ב-Gmail עבור ${recipient}?`
+      );
+
+      if (!approved) return;
 
       const gmailUrl = "https://mail.google.com/mail/?view=cm&fs=1" +
         "&to=" + encodeURIComponent(recipient) +
         "&su=" + encodeURIComponent(mailSubject) +
         "&body=" + encodeURIComponent(mailBody);
 
-      const popup = window.open(gmailUrl, "_blank", "noopener,noreferrer");
-      if (!popup) {
-        status.textContent = "הדפדפן חסם את החלון. אפשר חלונות קופצים לאתר ולחץ שוב.";
-        status.className = "status show error";
-        return;
-      }
-
-      status.textContent = "Gmail נפתח בחלון חדש עם ההודעה מוכנה. לחץ שם על שליחה.";
-      status.className = "status show";
-      consent.checked = false;
-      update();
+      window.location.assign(gmailUrl);
     });
 
-    update();
+    updateButton();
   </script>
 </body>
 </html>
